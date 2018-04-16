@@ -20,6 +20,7 @@
 }
 
 .Input {
+    margin: 0 0 16px;
     padding: 6px 16px;
 
     width: 100%;
@@ -42,7 +43,7 @@
 .Separator {
     margin: 8px 0;
     background: #ddd;
-    height: 2px;
+    height: 1px;
     width: 100%;
 }
 

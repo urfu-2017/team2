@@ -48,7 +48,7 @@ export default class Chats extends Component {
             <div className={styles.Wrapper}>
                 <div className={styles.Wrappers}>
                     <form onSubmit={this.addContact.bind(this)}>
-                        <input placeholder="Поиск" className={styles.Input}
+                        <input placeholder="Search" className={styles.Input}
                             value={this.state.chatInput}
                             onChange={this.filteredList.bind(this)}/>
                     </form>
