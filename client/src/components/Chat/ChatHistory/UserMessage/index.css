@@ -31,7 +31,7 @@
     display: block;
 
     text-align: right;
-    
+
     color: #aaa;
 }
 
@@ -53,6 +53,19 @@
     color: #489c8d;
 }
 
+.ImageWrapper
+{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.Img
+{
+    height: 150px;
+    object-fit: contain;
+    margin: 0 -4px;
+}
+
 /* Desktop */
 @media screen and (min-width: 426px) {
     .Wrapper {
@@ -66,3 +79,4 @@
         max-width: 250px;
     }
 }
+

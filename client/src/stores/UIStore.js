@@ -4,6 +4,7 @@ import * as States from '../enum/LoadState';
 import ChatInputState from './states/ChatInputState';
 import ChatState from './states/ChatState';
 import ChatListState from './states/ChatListState';
+import ChatPreviewState from './states/ChatPreviewState';
 
 export default class UIStore {
 
@@ -11,7 +12,9 @@ export default class UIStore {
         this.rootStore = rootStore;
         this.chatState = new ChatState(this.rootStore.dataStore);
         this.chatListState = new ChatListState(this.rootStore.dataStore);
-        this.chatInputState = new ChatInputState(this, this.rootStore.dataStore);
+        this.chatPreviewState = new ChatPreviewState(this.rootStore.dataStore);
+        this.chatInputState =
+            new ChatInputState(this, this.rootStore.dataStore, this.chatPreviewState);
     }
 
     @observable mainView = {
@@ -24,6 +27,10 @@ export default class UIStore {
     get loaderState() {
         return getLoaderState(this.rootStore.dataStore.loadingState);
     }
+
+    @action addAttachment = (attachment) => {
+        this.chatPreviewState.addAttachment(attachment);
+    };
 
     @action setSearchResults = (searchResults) => {
         if (searchResults) {

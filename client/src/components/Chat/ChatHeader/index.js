@@ -62,5 +62,3 @@ export default class ChatHeader extends Component {
         );
     }
 }
-
-

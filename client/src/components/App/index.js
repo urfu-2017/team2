@@ -21,7 +21,7 @@ export default class App extends Component {
 
     render() {
         const { dataStore, state } = this.props.rootStore;
-        const { chatState, chatListState, chatInputState } = state;
+        const { chatState, chatListState, chatInputState, chatPreviewState } = state;
 
         const chatList = chatListState.chatsToDisplay.map(chat => (
             <ChatItem key={chat._id}
@@ -40,6 +40,7 @@ export default class App extends Component {
                 name={message.name}
                 body={message.body}
                 createdAt={message.createdAt}
+                attachments={message.attachments}
                 og={message.og}/>
         ));
 
@@ -48,6 +49,7 @@ export default class App extends Component {
         return (
             <Provider chatInputState={chatInputState}
                 chatListState={chatListState}
+                chatPreviewState={chatPreviewState}
                 chatState={chatState}>
                 <div className={styles.Wrapper}>
                     <div className={styles.LoadingScreen}

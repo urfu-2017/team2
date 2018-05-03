@@ -47,6 +47,14 @@ function initWorker(webWorker, dataStore, state) {
         dataStore.loadChatList();
     });
 
+    webWorker.subscribe('UploadImage', (error, result) => {
+        if (error) {
+            console.info(error);
+        }
+
+        state.addAttachment(result);
+    });
+
     webWorker.subscribe('NewMessage', (error, result) => {
         if (error) {
             console.info(error);

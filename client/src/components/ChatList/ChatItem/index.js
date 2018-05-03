@@ -33,7 +33,7 @@ export default class ChatItem extends Component {
                     {this.props.name}
                 </span>
                 <span className={styles.LastMessage}
-                    dangerouslySetInnerHTML={{ __html: this.props.lastMessage }} />
+                    dangerouslySetInnerHTML={{ __html: this.props.lastMessage }}/>
                 <span className={styles.LastMessageDate}>
                     {this._formatDate(this.props.lastMessageDate)}
                 </span>

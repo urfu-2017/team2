@@ -6,11 +6,10 @@ export default class OGAttachment extends Component {
     constructor(props) {
         super(props);
 
-        this.imageUrl =
-            this.props.image.url ||
-            (this.props.image.find(img => img.url.startsWith('http')) &&
-                this.props.image.find(img => img.url.startsWith('http')).url);
-
+        this.imageUrl = this.props.image.url || (this.props.image[0] && this.props.image[0].url);
+        if (this.imageUrl && this.imageUrl.startsWith('/')) {
+            this.imageUrl = this.props.url + this.imageUrl;
+        }
     }
 
     static propTypes = {
@@ -32,7 +31,7 @@ export default class OGAttachment extends Component {
                     }
                     {
                         this.imageUrl
-                            ? <img src={this.imageUrl} />
+                            ? <img className={styles.OgImage} src={this.imageUrl} />
                             : null
                     }
                 </div>

@@ -1,9 +1,10 @@
 import io from 'socket.io-client';
 import * as Types from '../enum/WSActionType';
+import ss from 'socket.io-stream';
 
 const METHODS =
     ['GetMessages', 'GetProfile', 'SearchByLogin', 'AddContact', 'GetChatList',
-        'SendMessage', 'DeleteProfile'];
+        'SendMessage', 'DeleteProfile', 'UploadImage'];
 
 let TOKEN;
 let socket;
@@ -33,6 +34,14 @@ onmessage = e => {
     if (action === 'auth' && !TOKEN) {
         TOKEN = e.data.token;
         init();
+
+        return;
+    }
+
+    if (action === 'UploadImage') {
+        const stream = ss.createStream();
+        ss(socket).emit('UploadImage', stream);
+        ss.createBlobReadStream(e.data.value).pipe(stream);
 
         return;
     }

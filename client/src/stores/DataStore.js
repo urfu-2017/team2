@@ -56,12 +56,13 @@ export default class DataStore {
         this.webWorker.addContact(userId);
     };
 
-    @action sendMessage = ({ text, chatId }) => {
+    @action sendMessage = ({ text, chatId, attachments }) => {
         const tempId = uuid();
         const messageForStore = {
             body: text,
             from: this.profile._id,
             createdAt: Date.now(),
+            attachments,
             chatId,
             tempId
         };
@@ -87,6 +88,10 @@ export default class DataStore {
     @action searchByLogin = (userId) => {
         this.loadingState = States.SEARCH_CONTACTS;
         this.webWorker.searchByLogin(userId);
+    };
+
+    @action uploadImage = (image) => {
+        this.webWorker.uploadImage(image);
     };
 
     @action loadChatList = () => {
@@ -129,7 +134,8 @@ export default class DataStore {
         this.webWorker.sendMessage({
             text: messageData.body,
             chatId: messageData.chatId,
-            tempId: messageData.tempId
+            tempId: messageData.tempId,
+            attachments: messageData.attachments
         });
 
         this._messagesForSend[messageData.tempId] = {
@@ -155,10 +161,6 @@ function initChat(chat) {
         return;
     }
     const user = chat.users.find(entry => entry._id !== this.profile._id);
-
-    if (!user) {
-        return;
-    }
 
     chat.avatar = user.avatar;
     chat.name = user.login;

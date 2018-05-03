@@ -63,3 +63,7 @@
 .Wrapper:hover > .UnreadCount {
     background-color:#fffffa;
 }
+
+.LastMessage p {
+    margin: 0;
+}

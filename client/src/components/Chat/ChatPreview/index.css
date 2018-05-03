@@ -1,0 +1,131 @@
+.Upload
+{
+    display: none
+}
+
+.PreviewImg
+{
+    height: 80px;
+    margin: 10px 4px;
+    display: grid;
+    /* grid-template-columns: 100px; */
+    grid-template-rows: 100px;
+    margin-bottom: 17px;
+}
+
+.Img
+{
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    grid-area: 1 / 1 / 2 / 2;
+    justify-self: flex-end;
+    opacity: .9;
+    border-radius: 4px;
+}
+
+.PreviewImgList
+{
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.Button:active
+{
+    color: #03a9f4;
+}
+
+.Button
+{
+    display: flex;
+
+    margin: auto 10px auto 10px;
+    padding: 0;
+    color: #757575;
+    text-decoration: none;
+    user-select: none;
+    background: transparent;
+    outline: none;
+    border: 0;
+    width: 2%;
+}
+
+.CloseButton
+{
+    position: absolute;
+    grid-area: 1 / 1 / 2 / 2;
+    /* margin-left: 76px; */
+    margin-top: 3px;
+    color: white;
+    transform: scale(.9);
+}
+
+.Loader,
+.Loader:after {
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+}
+
+.Loader {
+    margin: 20px;
+    position: relative;
+    text-indent: -9999em;
+    border-top: 4px solid rgba(119, 119, 119, 0.479);
+    border-right: 4px solid rgba(119, 119, 119, 0.479);
+    border-bottom: 4px solid rgba(119, 119, 119, 0.479);
+    border-left: 4px solid rgba(14, 13, 13, 0.479);
+    transform: translateZ(0);
+    animation: load 1.1s infinite linear;
+}
+
+@keyframes load {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.PopupContainer {
+    padding: 20px;
+    width: 380px;
+    height: 130px;
+    display: grid;
+    grid-template-areas: "u u c" "a n n" "a s s";
+    grid-template-rows: 60px 35px 35px;
+    grid-template-columns: 90px 270px 20px;
+}
+
+.PopupUserInfo {
+    font-size: 18px;
+    grid-area: u;
+    align-self: baseline;
+}
+
+.PopupClose {
+    color: #aaa;
+    font-size: 18px;
+    grid-area: c;
+    align-self: baseline;
+    cursor: pointer;
+}
+
+.PopupAvatar {
+    grid-area: a;
+}
+
+.PopupName {
+    font-size: 16px;
+    font-weight: 600;
+    grid-area: n;
+    align-self: end;
+}
+
+.PopupStatus {
+    color: #aaa;
+    grid-area: s;
+}
+

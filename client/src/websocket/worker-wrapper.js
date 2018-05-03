@@ -30,8 +30,9 @@ export class WorkerWrapper {
         this._worker.postMessage({ action: 'AddContact', value: userId });
     }
 
-    sendMessage({ chatId, text, tempId }) {
-        this._worker.postMessage({ action: 'SendMessage', value: { chatId, text, tempId } });
+    sendMessage({ chatId, text, tempId, attachments }) {
+        this._worker
+            .postMessage({ action: 'SendMessage', value: { chatId, text, tempId, attachments } });
     }
 
     deleteProfile(userId) {
@@ -40,6 +41,10 @@ export class WorkerWrapper {
 
     searchByLogin(login) {
         this._worker.postMessage({ action: 'SearchByLogin', value: login });
+    }
+
+    uploadImage(image) {
+        this._worker.postMessage({ action: 'UploadImage', value: image });
     }
 
     _handleResponse(response) {

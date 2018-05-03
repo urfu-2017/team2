@@ -30,8 +30,8 @@ export default class ChatListState {
     @computed
     get chatsToDisplay() {
         return this.dataStore.chatList.filter(chat => {
-            return chat ? chat.name.toLowerCase()
-                .indexOf(this.chatInput.toLowerCase()) !== -1 : null;
+            return chat.name.toLowerCase()
+                .indexOf(this.chatInput.toLowerCase()) !== -1;
         }).map(chat => {
             chat.lastMessage = this.dataStore.getLastChatMessage(chat);
 

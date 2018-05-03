@@ -4,9 +4,10 @@ import { emojiIndex } from 'emoji-mart';
 
 export default class ChatInputState {
 
-    constructor(state, dataStore) {
+    constructor(state, dataStore, previewState) {
         this.state = state;
         this.dataStore = dataStore;
+        this.previewState = previewState;
     }
 
     @observable chatInput = '';
@@ -21,13 +22,22 @@ export default class ChatInputState {
     };
 
     @action submit = () => {
-        if (!this.chatInput) {
+        if (!this.chatInput && this.previewState.attachments.length <= 0) {
+            return;
+        }
+
+        if (this.previewState.uploadQueue.length > 0) {
+            this.previewState.error = 'Wait until all files are loaded';
+
             return;
         }
         this.dataStore.sendMessage({
             chatId: this.state.chatState.currentChat._id,
-            text: this.chatInput
+            text: this.chatInput,
+            attachments: this.previewState.attachments.slice()
         });
+
+        this.previewState.attachments = [];
         this.chatInput = '';
     };
 
