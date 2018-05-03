@@ -1,0 +1,32 @@
+.Wrapper {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: stretch;
+
+    margin: 8px 0 0;
+
+    width: 100%;
+
+    color: #1e1e24;
+    text-decoration: none;
+}
+
+.Wrapper::before {
+    margin: 0 4px 0 0;
+    width: 2px;
+
+    content: '';
+    background: #03a9f4;
+    border-radius: 4px;
+}
+
+.Title {
+    display: block;
+
+    color: #03a9f4;
+    font-weight: 600;
+}
+
+.Description {
+    display: block;
+}

@@ -6,22 +6,35 @@ const passport = require('passport');
 const bodyParser = require('body-parser');
 const config = require('config');
 const express = require('express');
-const { connect, setTimeout } = require('hruhru');
+const mongoose = require('mongoose');
 const morgan = require('morgan');
 const path = require('path');
 const cors = require('cors');
 const { createServer } = require('http');
 
-const makePassport = require('./app/passport');
-const { strategy } = require('./app/authStrategy');
+const { setSerializers, strategy } = require('./app/tools/auth');
 const routes = require('./app/routes');
+const createOlesya = require('./app/tools/createOlesya');
 
 const app = express();
 const httpServer = createServer(app);
 const sessionStore = new session.MemoryStore();
 
-connect(process.env.DB_URL, process.env.DB_TOKEN);
-setTimeout(2 * 1000);
+let timeout = 3000;
+
+function connect() {
+    mongoose.connect(process.env.DB_URL, { connectTimeoutMS: timeout }).then(
+        () => console.info('Connected to database'),
+        (e) => {
+            console.error(e);
+            timeout += 2000;
+            console.info(`Attempt to connect with ${timeout} ms`);
+            connect();
+        });
+}
+
+connect();
+createOlesya();
 
 const corsOptions = {
     origin: 'http://localhost:8080',
@@ -30,7 +43,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-passport.use(strategy);
 app.use(session({
     store: sessionStore,
     secret: process.env.EXPRESS_SESSION_SECRET,
@@ -41,11 +53,11 @@ app.use(session({
     }
 }));
 
-if (config.get('debug')) {
-    app.use(express.static(config.get('staticPath')));
-}
+app.use(express.static(config.get('staticPath')));
 
-makePassport(passport);
+passport.use(strategy);
+setSerializers(passport);
+
 app.use(passport.initialize());
 app.use(passport.session());
 

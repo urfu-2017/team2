@@ -15,7 +15,7 @@ const host = process.env.NODE_ENV === 'production'
 console.info(host);
 
 module.exports = {
-    mode: 'development',
+    mode: process.env.NODE_ENV,
     entry: {
         index: path.join(__dirname, '/src/index.js'),
         vendor: vendorLibs
@@ -86,13 +86,24 @@ module.exports = {
                         }
                     }
                 ]
+            },
+            {
+                test: /\.(woff(2)?|ttf|eot)(\?v=\d+\.\d+\.\d+)?$/,
+                use: [{
+                    loader: 'file-loader',
+                    options: {
+                        name: '[name].[ext]',
+                        outputPath: 'fonts/'
+                    }
+                }]
             }
         ]
     },
 
     plugins: [
         new HtmlWebpackPlugin({
-            template: 'index.html'
+            template: 'app.html',
+            filename: 'app.html'
         }),
         new webpack.DefinePlugin({
             'process.env.HOST': JSON.stringify(host)
@@ -102,8 +113,9 @@ module.exports = {
     devServer: {
         contentBase: path.join(__dirname, 'dist'),
         compress: true,
-        port: 8080
+        port: 9000
     },
+
     node: {
         fs: 'empty'
     }

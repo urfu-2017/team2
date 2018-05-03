@@ -1,21 +1,19 @@
 'use strict';
 
+const mongoose = require('mongoose');
 const PassportMemStoreSessionGetter = require('./classes/PassportMemStoreSessionGetter');
-// eslint-disable-next-line no-unused-vars
 const olesya = require('./tools/olesya');
 const WebSocketServer = require('./classes/WebSocketServer');
 const SendQueue = require('./classes/SendQueue');
 const { queue } = require('async');
-const { markdownIt } = require('./tools/markdown');
-const { getHrefArray } = require('./tools/href');
-const { openGraph } = require('./controllers/opengraph');
-let LOGINS_CACHE = [];
+const parseMarkdown = require('./tools/parse-markdown');
+const getUrls = require('./tools/get-urls');
+const opengraph = require('./tools/opengraph');
 
 const {
     ChatModel,
     UserModel,
-    UserIdLoginModel,
-    messageModelFactory
+    MessageModel
 } = require('./models');
 const sendQueue = new SendQueue();
 const executeQueues = {};
@@ -23,9 +21,6 @@ const executeQueues = {};
 module.exports = async function (app, sessionStore) {
     const sessionGetter = new PassportMemStoreSessionGetter(sessionStore);
     const wsServer = new WebSocketServer(app, sessionGetter);
-    await updateLoginCache();
-    console.info('Login cache ready!');
-    setInterval(updateLoginCache, 300 * 1000);
 
     wsServer.on('authUserConnected', ({ socket, uid }) => {
         if (!executeQueues[uid]) {
@@ -59,9 +54,10 @@ module.exports = async function (app, sessionStore) {
                 const result = await addContact(uid, userId);
 
                 result.users.forEach(user => {
-                    wsServer.emitByUID(user.id, 'NewChat', result);
+                    wsServer.emitByUID(user._id, 'NewChat', result);
                 });
             } catch (error) {
+                console.error(error);
                 socket.emitByUID(uid, 'AddContactResult', {
                     success: false,
                     error: error.message || error.body
@@ -78,40 +74,27 @@ module.exports = async function (app, sessionStore) {
             uid,
             execute.bind(null, socket, uid, GetChatList)
         ));
-        socket.on('SendMessage', pushAction.bind(null, uid, async ({ chatId, text }) => {
+        socket.on('SendMessage', pushAction.bind(null, uid, async ({ chatId, text, tempId }) => {
             try {
                 const message = await sendMessage(uid, chatId, text);
-                const chat = await ChatModel.getById(chatId);
+                const chat = await ChatModel.findById(chatId).exec();
 
                 wsServer.emitByUID(uid, 'SendMessageResult', {
                     success: true,
-                    value: message
+                    value: Object.assign(message.toObject(), {
+                        tempId
+                    })
                 });
-                chat.users.forEach(userId => {
-                    wsServer.emitByUID(userId, 'NewMessage', message);
-                });
+                chat
+                    .users
+                    .filter(userId => userId.toString() !== uid)
+                    .forEach(userId => {
+                        wsServer.emitByUID(userId, 'NewMessage', message);
+                    });
+
+                await emmitOlesyaMessage(chat, text);
             } catch (error) {
                 wsServer.emitByUID(uid, 'SendMessageResult', {
-                    success: false,
-                    error: error.message || error.body
-                });
-            }
-        }));
-        socket.on('AskOlesya', pushAction.bind(null, uid, async (text) => {
-            try {
-                const OlesyMessageModel = messageModelFactory('olesya');
-                const answer = await olesya.ask(text);
-
-                const olesyaMessage = new OlesyMessageModel({
-                    body: answer
-                });
-
-                socket.emit('AskOlesyaResult', {
-                    success: true,
-                    value: olesyaMessage
-                });
-            } catch (error) {
-                socket.emit('AskOlesyaResult', {
                     success: false,
                     error: error.message || error.body
                 });
@@ -123,6 +106,17 @@ module.exports = async function (app, sessionStore) {
             }
         });
     });
+
+    async function emmitOlesyaMessage(chat, text) {
+        if (chat.containsUser('OlesyaUserId')) {
+            const answer = await olesya.ask(text);
+            const olesyaMessage =
+                await sendMessage(mongoose.Types.ObjectId('OlesyaUserId'), chat._id, answer);
+            chat.users.forEach(userId => {
+                wsServer.emitByUID(userId, 'NewMessage', olesyaMessage);
+            });
+        }
+    }
 };
 
 function pushAction(uid, action, data) {
@@ -146,59 +140,61 @@ async function execute(socket, uid, fn, data) {
 }
 
 async function sendMessage(uid, chatId, text) {
-    const chat = await ChatModel.getById(chatId);
+    const chat = await ChatModel.findById(chatId);
 
     if (chat.users.indexOf(uid) === -1) {
         throw new Error('Not your chat!');
     }
 
-    const MessageModel = messageModelFactory(chatId);
-    const hrefs = getHrefArray(text);
+    const urls = getUrls(text);
 
     const message = new MessageModel({
+        chatId: chatId,
         from: uid,
-        body: markdownIt(text)
+        body: parseMarkdown(text)
     });
 
     sendQueue.push(chatId, message);
-    message.chatId = chatId;
 
-    if (hrefs.length) {
+    if (urls) {
         try {
-            const og = await openGraph(hrefs[0]);
+            const og = await opengraph(urls[0]);
             message.og = og;
         } catch (error) {
             console.error(error);
         }
     }
 
+    await message.save();
+
     return message;
 }
 
 async function DeleteProfile(uid) {
-    return await UserModel.removeById(uid);
+    return await UserModel.findByIdAndRemove(uid).exec();
 }
 
 async function GetMessages(uid, { chatId, offset, limit }) {
-    const chat = await ChatModel.getById(chatId);
+    const chat = await ChatModel.findById(chatId);
 
     if (chat.users.indexOf(uid) === -1) {
         throw new Error('Not your chat!');
     }
 
-    const MessageModel = messageModelFactory(chatId);
-
     return {
         chatId,
-        messages: await MessageModel.getList({
-            offset: offset || 0,
-            limit: limit || 100
-        })
+        messages: (await MessageModel
+            .find({ chatId: chatId })
+            .sort({ createdAt: -1 })
+            .skip(offset || 0)
+            .limit(limit || 0)
+            .exec())
+            .reverse()
     };
 }
 
 async function GetProfile(uid, userId) {
-    const user = await UserModel.getById(userId || uid);
+    const user = await UserModel.findById(userId || uid);
 
     return getProfileFromUser(user);
 }
@@ -210,14 +206,12 @@ async function SearchByLogin(uid, login) {
         throw new Error('Empty request!');
     }
 
-    const me = await UserModel.getById(uid);
-    const foundUsers = await findLoginInCache(login, me);
+    const me = await UserModel.findById(uid);
+    let foundUsers = await UserModel.find({ login: new RegExp(login, 'i') });
 
-    if (foundUsers.length !== 0) {
-        return foundUsers;
-    }
+    foundUsers = foundUsers.filter(user => me.contacts.indexOf(user._id) === -1);
 
-    return findLoginInDB(login, me);
+    return foundUsers.map(getProfileFromUser);
 }
 
 async function addContact(uid, userId) {
@@ -225,37 +219,43 @@ async function addContact(uid, userId) {
         throw new Error('You can\'t add yourself!');
     }
 
-    const me = await UserModel.getById(uid);
+    const me = await UserModel.findById(uid);
     if (me.contacts.indexOf(userId) !== -1) {
         throw new Error('You have this contact!');
     }
-    const he = await UserModel.getById(userId);
+    const he = await UserModel.findById(userId);
 
-    me.addContact(he);
+    await me.addContact(userId);
+    await he.addContact(uid);
 
     const chat = new ChatModel({
         dialog: true
     });
     await chat.save();
 
-    await chat.addUser(he);
-    await chat.addUser(me);
+    await chat.addUser(uid);
+    await chat.addUser(userId);
+
+    await me.addChat(chat._id);
+    await he.addChat(chat._id);
 
     return getChatForEmit(chat);
 }
 
 async function GetChatList(uid) {
-    const user = await UserModel.getById(uid);
+    const user = await UserModel
+        .findById(uid)
+        .populate('chats')
+        .exec();
 
     const result = [];
-    for (const chatId of user.chats) {
+    for (const chat of user.chats) {
         try {
-            const chat = await ChatModel.getById(chatId);
             const emitChat = await getChatForEmit(chat);
 
             result.push(emitChat);
         } catch (error) {
-            console.error(`Can't find chat ${chatId}`);
+            console.error(`Can't find chat ${chat._id}`);
         }
     }
 
@@ -263,81 +263,23 @@ async function GetChatList(uid) {
 }
 
 async function getChatForEmit(chat) {
-    const users = await (await ChatModel.getById(chat.id)).getByLink('users');
+    const newChat = await ChatModel
+        .findById(chat._id)
+        .populate('users')
+        .exec();
 
     return {
-        id: chat.id,
+        _id: chat._id,
         name: chat.name,
         dialog: chat.dialog,
-        users: users.map(getProfileFromUser)
+        users: newChat.users.map(getProfileFromUser)
     };
 }
 
 function getProfileFromUser(user) {
     return {
-        id: user.id,
+        _id: user._id,
         login: user.login,
         avatar: user.avatar
     };
-}
-
-async function updateLoginCache() {
-    const iterator = UserIdLoginModel.getIterator({
-        limit: 100
-    });
-
-    const newCache = [];
-    let next = await iterator.next();
-    while (next) {
-        try {
-            const user = await next.getByLink('userId');
-            newCache.push(getProfileFromUser(user));
-        } catch (error) {
-            console.error(error.body);
-        } finally {
-            next = await iterator.next();
-        }
-    }
-
-    LOGINS_CACHE = newCache;
-}
-
-async function findLoginInCache(str, me) {
-    const foundUsers = [];
-
-    for (const profile of LOGINS_CACHE) {
-        const match = profile.login.toLowerCase().indexOf(str.toLowerCase()) !== -1;
-        const notHave = me.contacts.indexOf(profile.id) === -1;
-        const notMe = profile.id !== me.id;
-
-        if (match && notHave && notMe) {
-            foundUsers.push(profile);
-        }
-    }
-
-    return foundUsers;
-}
-
-async function findLoginInDB(str, me) {
-    const foundUsers = [];
-
-    const allUsersIterator = UserIdLoginModel.getIterator();
-    let userIdAndLogin = await allUsersIterator.next();
-    while (userIdAndLogin) {
-        const match = userIdAndLogin.login.toLowerCase().indexOf(str.toLowerCase()) !== -1;
-        const notHave = me.contacts.indexOf(userIdAndLogin.userId) === -1;
-        const notMe = userIdAndLogin.userId !== me.id;
-
-        if (match && notHave && notMe) {
-            try {
-                const user = await userIdAndLogin.getByLink('userId');
-                foundUsers.push(user);
-            } catch (error) {
-                console.error(error.message);
-            }
-        }
-        userIdAndLogin = await allUsersIterator.next();
-    }
-
-    return foundUsers;
 }

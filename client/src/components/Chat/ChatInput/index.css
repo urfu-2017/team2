@@ -1,0 +1,41 @@
+.Wrapper {
+    display: flex;
+}
+
+.Input {
+    padding: 15.5px 16px 16.5px;
+    width: 100%;
+
+    font-size: 14px;
+
+    background: #fffffa;
+
+    border: none;
+    box-sizing: border-box;
+}
+
+.Input:focus {
+    outline: none;
+}
+
+.Button {
+    display: flex;
+
+    margin: auto 16px auto 0;
+    padding: 0;
+
+    color: #757575;
+    text-decoration: none;
+    user-select: none;
+    background: transparent;
+    outline: none;
+    border: 0;
+}
+
+.Button:active {
+    color: #03a9f4;
+}
+
+.ImageButton {
+    margin: 0 0 0 16px;
+}

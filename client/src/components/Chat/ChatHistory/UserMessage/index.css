@@ -1,0 +1,68 @@
+.Wrapper {
+    margin: 8px 0;
+    padding: 8px 12px;
+
+    min-width: 150px;
+
+    word-wrap:break-word;
+
+    font-size: 14px;
+
+    background: #fffffa;
+
+    box-shadow: 0 0 8px #00000017;
+}
+
+.Name {
+    font-weight: 600;
+}
+
+.Body p {
+    margin: 0;
+}
+
+.Body code {
+    font-family: 'IBM Plex Mono';
+
+    color: #aaa;
+}
+
+.Time {
+    display: block;
+
+    text-align: right;
+    
+    color: #aaa;
+}
+
+.FromMe {
+    align-self: flex-end;
+
+    background: #e9fffb;
+    border-radius: 8px 8px 0;
+}
+
+.FromSomeone {
+    align-self: flex-start;
+
+    border-radius: 8px 8px 8px 0;
+}
+
+.FromMe .Time,
+.FromMe .Body code {
+    color: #489c8d;
+}
+
+/* Desktop */
+@media screen and (min-width: 426px) {
+    .Wrapper {
+        max-width: 350px;
+    }
+}
+
+/* Tablet and Mobile */
+@media screen and (max-width: 425px) {
+    .Wrapper {
+        max-width: 250px;
+    }
+}

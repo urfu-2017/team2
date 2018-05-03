@@ -1,17 +1,15 @@
 import io from 'socket.io-client';
 import * as Types from '../enum/WSActionType';
 
+const METHODS =
+    ['GetMessages', 'GetProfile', 'SearchByLogin', 'AddContact', 'GetChatList',
+        'SendMessage', 'DeleteProfile'];
+
 let TOKEN;
 let socket;
-const methods =
-    ['GetMessages', 'GetProfile', 'SearchByLogin', 'AddContact', 'GetChatList',
-        'SendMessage', 'DeleteProfile', 'AskOlesya'];
 
-const host = process.env.HOST;
-console.info('host: ' + process.env.HOST);
-
-function initSocket() {
-    socket = io(host, {
+function init() {
+    socket = io(process.env.HOST, {
         transports: ['websocket'],
         query: { token: TOKEN }
     });
@@ -23,23 +21,21 @@ function initSocket() {
         postMessage({ action: 'NewChat', result: chat, type: Types.EMIT });
     });
 
-    for (const method of methods) {
+    for (const method of METHODS) {
         socket.on(`${method}Result`, result => {
-            console.info(result);
             postMessage({ action: method, result, type: Types.RESPONSE });
         });
     }
 }
 
 onmessage = e => {
-    console.info('Received message from main');
-    console.info(e.data);
     const action = e.data.action;
     if (action === 'auth' && !TOKEN) {
         TOKEN = e.data.token;
-        initSocket();
+        init();
 
         return;
     }
+
     socket.emit(action, e.data.value);
 };
