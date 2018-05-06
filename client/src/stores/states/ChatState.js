@@ -19,5 +19,4 @@ export default class ChatState {
     @action selectChat = (chat) => {
         this.currentChat = chat;
     };
-
 }

@@ -15,4 +15,18 @@
     align-self: center;
 }
 
+.EmojiPicker
+{
+    position: absolute;
+    top: 0;
+    height: 0;
+}
 
+.DatetimePicker
+{
+    background: white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}

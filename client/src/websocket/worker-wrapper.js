@@ -26,6 +26,10 @@ export class WorkerWrapper {
         this._worker.postMessage({ action: 'GetChatList' });
     }
 
+    uploadAvatar(avatar) {
+        this._worker.postMessage({ action: 'UploadAvatar', value: avatar });
+    }
+
     addContact(userId) {
         this._worker.postMessage({ action: 'AddContact', value: userId });
     }
@@ -33,6 +37,13 @@ export class WorkerWrapper {
     sendMessage({ chatId, text, tempId, attachments }) {
         this._worker
             .postMessage({ action: 'SendMessage', value: { chatId, text, tempId, attachments } });
+    }
+
+    sendReaction(code, messageId) {
+        this._worker.postMessage({
+            action: 'SendReaction',
+            value: { code, messageId }
+        });
     }
 
     deleteProfile(userId) {
@@ -47,8 +58,33 @@ export class WorkerWrapper {
         this._worker.postMessage({ action: 'UploadImage', value: image });
     }
 
+    setAlarm(time, messageId) {
+        const now = Date.now();
+
+        this._worker.postMessage({
+            action: 'SetAlarm',
+            value: { time: time * 1000, messageId, now }
+        });
+    }
+
+    createChat(userIds) {
+        this._worker.postMessage({ action: 'CreateChat', value: userIds });
+    }
+
+    revokeLink(chatId) {
+        this._worker.postMessage({ action: 'RevokeLink', value: chatId });
+    }
+
+    getContactList() {
+        this._worker.postMessage({ action: 'GetContactList' });
+    }
+
     _handleResponse(response) {
         const handlers = this._handlers[response.action];
+
+        if (!handlers) {
+            throw new Error(`No handlers for ${response.action}`);
+        }
 
         if (response.type === Types.RESPONSE) {
             handlers.forEach(handler => handler(null, response.result.value));

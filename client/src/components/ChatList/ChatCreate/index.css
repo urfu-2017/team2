@@ -1,0 +1,31 @@
+.ContactList{
+    padding-bottom: 30px;
+}
+
+.Button {
+
+    position: fixed;
+    bottom: 0;
+    padding: 0;
+    width: 270px;
+    height: 40px;
+
+    background-color: #ddd;
+    text-decoration: none;
+    text-align: center;
+    user-select: none;
+    font-size: 20px;
+    color: #000a;
+    cursor: pointer;
+    outline: none;
+    border: 0;
+}
+
+.Button:active {
+    background-color: #03a9f4;
+    color: #fff;
+}
+
+.Button:disabled{
+    cursor: not-allowed;
+}

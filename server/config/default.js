@@ -5,6 +5,7 @@ module.exports = {
     debug: true,
     host: 'http://localhost:8080',
     port: 8080,
-    staticPath: path.join(__dirname, '../../client/dist'),
+    staticPath: '/',
+    clientFiles: path.join(__dirname, '../../client/dist'),
     clientHost: 'http://localhost:8080'
 };

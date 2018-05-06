@@ -68,7 +68,7 @@ module.exports.strategy = new passportGithub.Strategy(
             console.info(`User exist ${user.login}`);
             done(null, user);
         } catch (error) {
-            console.info(error.message);
+            console.error(error.message);
 
             const user = await createUser(profile);
 

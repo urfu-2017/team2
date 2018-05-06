@@ -8,8 +8,6 @@
 
     font-size: 14px;
 
-    background: #fffffa;
-
     box-shadow: 0 0 8px #00000017;
 }
 
@@ -35,16 +33,34 @@
     color: #aaa;
 }
 
-.FromMe {
-    align-self: flex-end;
+.BottomIcon > i
+{
+    font-size: 14px;
+}
 
+.BottomIcon
+{
+    margin-left: 5px;
+    display: inline-flex;
+    vertical-align: middle;
+}
+
+.FromMe
+{
+    align-self: flex-end;
+}
+
+.FromMe .Wrapper {
     background: #e9fffb;
     border-radius: 8px 8px 0;
 }
 
 .FromSomeone {
     align-self: flex-start;
+}
 
+.FromSomeone .Wrapper {
+    background: #fffffa;
     border-radius: 8px 8px 8px 0;
 }
 
@@ -66,6 +82,67 @@
     margin: 0 -4px;
 }
 
+.Message:hover .MessageActions
+{
+    display: block;
+}
+
+.MessageActions
+{
+    display: none;
+    height: 20px;
+    border: 1px solid rgb(218, 218, 218);
+    background: white;
+    float: right;
+    border-radius: 5px;
+}
+
+.MessageActions > div:last-child
+{
+    border: none;
+}
+
+.MessageAction
+{
+    cursor: pointer;
+    display: inline-flex;
+    vertical-align: middle;
+    border-right: 1px solid rgb(218, 218, 218);
+    padding: 0 5px;
+}
+
+.MessageAction:hover
+{
+    background: rgb(210, 210, 210);
+}
+
+.MessageAction > i
+{
+    font-size: 20px;
+}
+
+.Reactions
+{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.Reaction
+{
+    background: white;
+    border: 1px solid rgb(218, 218, 218);
+    border-radius: 5px;
+    padding: 3px 5px;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.Reaction > span:last-child
+{
+    margin-left: 3px;
+}
+
 /* Desktop */
 @media screen and (min-width: 426px) {
     .Wrapper {
@@ -79,4 +156,3 @@
         max-width: 250px;
     }
 }
-

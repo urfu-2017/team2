@@ -7,13 +7,17 @@ const chatSchema = new mongoose.Schema({
     name: String,
     dialog: Boolean,
     users: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
-    createdAt: { type: Date, default: Date.now }
+    createdAt: { type: Date, default: Date.now },
+    inviteLink: { type: String, index: true }
 });
 
 chatSchema.methods.addUser = function (personId) {
-    this.users.push(personId);
+    personId = mongoose.Types.ObjectId(personId);
+    if (this.users.some(userId => userId.equals(personId))) {
+        return;
+    }
 
-    return this.save();
+    return this.update({ $push: { users: personId } }).exec();
 };
 
 chatSchema.methods.containsUser = function (userName) {

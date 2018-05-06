@@ -6,6 +6,15 @@ export default class ChatPreviewState {
         this.dataStore = dataStore;
         this.FILE_AMOUNT_LIMIT = 10;
         this.FILE_SIZE_LIMIT = 7;
+        this.FILE_FORMAT = ['image/jpg',
+            'image/jpeg',
+            'image/png',
+            'image/gif',
+            'jpg',
+            'jpeg',
+            'gif',
+            'png'
+        ];
     }
 
     @observable error = '';
@@ -13,6 +22,8 @@ export default class ChatPreviewState {
     @observable attachments = [];
 
     @observable uploadQueue = [];
+
+    @observable isDropping = false;
 
     @action change = (files) => {
         if (files.length > this.FILE_AMOUNT_LIMIT ||
@@ -24,6 +35,14 @@ export default class ChatPreviewState {
         let sizeSum = 0;
         Object.values(files).forEach(file => {
             sizeSum += file.size;
+        });
+
+        Object.values(files).forEach(file => {
+            if (this.FILE_FORMAT.indexOf(file.type) === -1) {
+                this.error = 'This file fomat isn`t supported';
+            }
+
+            return;
         });
 
         if (sizeSum >= this.FILE_SIZE_LIMIT * 1024 * 1024) {
@@ -46,11 +65,11 @@ export default class ChatPreviewState {
     @action upload = () => {
         if (this.uploadQueue.length > 0) {
             this.dataStore.uploadImage(this.uploadQueue[0]);
-            this.uploadQueue.splice(0, 1);
         }
     };
 
     @action addAttachment = (attachment) => {
+        this.uploadQueue.splice(0, 1);
         this.attachments[(this.attachments.length - this.uploadQueue.length) - 1] = attachment;
         this.upload();
     };

@@ -2,18 +2,35 @@
     display: flex;
     flex-flow: column nowrap;
     align-items: stretch;
-
     flex-shrink: 2;
-
     padding: 16px;
-
     height: 100%;
-
     background: linear-gradient(#e6e9f0, #eef1f5);
-
     overflow-y: scroll;
 }
 
 .Supporter {
     height: 100%;
+}
+
+.Dropzone
+{
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: stretch;
+    flex-shrink: 2;
+    padding: 16px;
+    height: 100%;
+    overflow-y: hidden;
+    cursor: pointer;
+    border: thin dashed #b1aeae;
+    background: #fcfcfc;
+    opacity: .5;
+    border-radius: 5px;
+}
+
+.DropzoneContent
+{
+    margin: auto;
+    text-align: center;
 }

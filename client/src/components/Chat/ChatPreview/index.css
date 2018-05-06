@@ -8,7 +8,6 @@
     height: 80px;
     margin: 10px 4px;
     display: grid;
-    /* grid-template-columns: 100px; */
     grid-template-rows: 100px;
     margin-bottom: 17px;
 }
@@ -55,7 +54,7 @@
 {
     position: absolute;
     grid-area: 1 / 1 / 2 / 2;
-    /* margin-left: 76px; */
+    /* margin-right: 100%; */
     margin-top: 3px;
     color: white;
     transform: scale(.9);
@@ -90,42 +89,23 @@
 }
 
 .PopupContainer {
-    padding: 20px;
-    width: 380px;
+    width: 100%;
     height: 130px;
-    display: grid;
-    grid-template-areas: "u u c" "a n n" "a s s";
-    grid-template-rows: 60px 35px 35px;
-    grid-template-columns: 90px 270px 20px;
+    display: flex;
 }
 
-.PopupUserInfo {
-    font-size: 18px;
-    grid-area: u;
-    align-self: baseline;
+.ErrorMessage {
+    font-size: 22px;
+    width: 100%;
+    text-align: center;
+    margin: auto;
 }
 
 .PopupClose {
+    position: absolute;
+    top: 10px;
+    right: 10px;
     color: #aaa;
-    font-size: 18px;
-    grid-area: c;
-    align-self: baseline;
+    font-size: 22px;
     cursor: pointer;
 }
-
-.PopupAvatar {
-    grid-area: a;
-}
-
-.PopupName {
-    font-size: 16px;
-    font-weight: 600;
-    grid-area: n;
-    align-self: end;
-}
-
-.PopupStatus {
-    color: #aaa;
-    grid-area: s;
-}
-

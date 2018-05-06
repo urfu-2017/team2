@@ -30,9 +30,9 @@
 .PopupContainer {
     padding: 20px;
     width: 380px;
-    height: 130px;
+    height: 160px;
     display: grid;
-    grid-template-areas: "u u c" "a n n" "a s s";
+    grid-template-areas: "u u c" "a n n" "a s s" "lh lv lv";
     grid-template-rows: 60px 35px 35px;
     grid-template-columns: 90px 270px 20px;
 }
@@ -65,4 +65,52 @@
 .PopupStatus {
     color: #aaa;
     grid-area: s;
+}
+
+.PopupLinkHeader{
+    grid-area: lh;
+    font-size: 16px;
+    margin-top: 7px;
+    text-align: right;
+}
+
+.PopupLinkValue{
+    grid-area: lv;
+    display: flex;
+}
+
+.PopupLinkInput{
+    overflow: hidden;
+    height: 24px;
+    margin: 0 0 16px;
+    padding: 6px 16px;
+
+    width: 90%;
+
+    font-size: 14px;
+
+    background: #ddd;
+
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    box-sizing: border-box;
+}
+
+.PopupCopyButton {
+    display: flex;
+
+    margin: auto 16px 16px 0;
+    padding: 0;
+
+    color: #757575;
+    text-decoration: none;
+    user-select: none;
+    background: transparent;
+    outline: none;
+    border: 0;
+}
+
+.PopupCopyButton:active
+{
+    color: #03a9f4;
 }

@@ -15,24 +15,33 @@
 
 .Wrappers {
     border: none;
-
+    display: flex;
+    flex-wrap: wrap;
     padding: 16px 0;
 }
 
+.TopRow {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    margin-bottom: 10px;
+}
+
+.Profile {
+    margin-left: 10px;
+    align-self: center;
+}
+
 .SearchForm {
-    padding: 0 16px;
+    width: 170px;
+    align-self: center;
 }
 
 .SearchInput {
-    margin: 0 0 16px;
     padding: 6px 16px;
-
     width: 100%;
-
     font-size: 14px;
-
     background: #ddd;
-
     border: 1px solid #ddd;
     border-radius: 2px;
     box-sizing: border-box;
@@ -64,6 +73,39 @@
     color: #757575;
 }
 
+.Button {
+    display: flex;
+    padding: 0;
+    color: #757575;
+    text-decoration: none;
+    user-select: none;
+    background: transparent;
+    outline: none;
+    border: 0;
+    align-self: center;
+}
+
+.CreateChatBtn:active {
+    color: #03a9f4;
+    transform: rotate(45deg);
+    transition: transform .3s;
+}
+
+.CreateChatActive{
+    color: #03a9f4;
+    transform: rotate(45deg);
+    transition: transform .3s;
+}
+
+.CreateChatActive:active{
+    color: #757575;
+    transform: rotate(0);
+    transition: transform .3s;
+}
+
+.CreateChatIcon{
+    font-size: 30px;
+}
 
 /* Mobile */
 @media screen and (max-width: 767px) {

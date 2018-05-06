@@ -117,3 +117,34 @@ body {
         transform: rotate(360deg);
     }
 }
+
+/* Popup */
+.PopupContainer {
+    padding: 20px;
+    width: 380px;
+    height: 160px;
+    display: grid;
+    grid-template-areas: "u u c" "cont cont cont" "lh lv lv";
+    grid-template-rows: 60px 35px 35px;
+    grid-template-columns: 90px 270px 20px;
+}
+
+.PopupUserInfo {
+    font-size: 18px;
+    grid-area: u;
+    align-self: baseline;
+}
+
+.PopupClose {
+    color: #aaa;
+    font-size: 18px;
+    grid-area: c;
+    align-self: baseline;
+    cursor: pointer;
+}
+
+.PopupContent
+{
+    grid-area: cont;
+    word-wrap: break-word;
+}

@@ -13,15 +13,16 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.methods.addContact = async function (otherId) {
-    this.contacts.push(otherId);
-
-    return this.save();
+    return this.update({ $push: { contacts: otherId } }).exec();
 };
 
 userSchema.methods.addChat = function (chatId) {
-    this.chats.push(chatId);
+    chatId = mongoose.Types.ObjectId(chatId);
+    if (this.chats.some(oldChatId => oldChatId.toString() === chatId.toString())) {
+        return;
+    }
 
-    return this.save();
+    return this.update({ $push: { chats: chatId } }).exec();
 };
 
 module.exports = mongoose.model('User', userSchema);

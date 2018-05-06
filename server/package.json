@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "fix": "eslint . --fix",
+    "lint:fix": "eslint . --fix",
     "lint": "eslint .",
     "test": "npm run lint && mocha ./tests/*.js --timeout 15000",
     "ogt": "mocha ./tests/opengraph.js --reporter spec --timeout 15000",
@@ -36,6 +36,7 @@
     "pagedown": "^1.1.0",
     "passport": "^0.4.0",
     "passport-github": "^1.1.0",
+    "randomstring": "^1.1.5",
     "socket.io": "^2.1.0",
     "socket.io-stream": "^0.9.1",
     "subscriptions-transport-ws": "^0.9.7",
