@@ -68,7 +68,7 @@ module.exports = async function (app, sessionStore) {
             const cloud = cloudinary.createCloudStream(res => {
                 socket.emit('UploadImageResult', {
                     success: true,
-                    value: res.url
+                    value: res.secure_url
                 });
             });
             stream.pipe(cloud);
@@ -76,7 +76,8 @@ module.exports = async function (app, sessionStore) {
         ss(socket).on('UploadAvatar', (stream) => {
             const cloud = cloudinary.createCloudStream(async res => {
                 try {
-                    await UserModel.update({ _id: uid }, { $set: { avatar: res.url } }).exec();
+                    await UserModel.update({ _id: uid }, { $set: { avatar: res.secure_url } })
+                        .exec();
                 } catch (err) {
                     socket.emit('UploadAvatarResult', {
                         success: false,

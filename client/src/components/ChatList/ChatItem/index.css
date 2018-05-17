@@ -3,7 +3,8 @@
     display: grid;
     grid-template-columns: min-content auto min-content;
     grid-template-rows: 1fr 1fr;
-    grid-template-areas: 'a n d' 'a m c';
+    grid-template-areas: 'a n d'
+                         'a m c';
 
     align-items: center;
 
