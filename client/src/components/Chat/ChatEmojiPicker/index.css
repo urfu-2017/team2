@@ -1,5 +1,29 @@
-.Wrapper {
+.Wrapper,
+.WrapperNight
+{
     position: absolute;
     bottom: 48px;
     right: 0;
+}
+
+.WrapperNight > aside,
+.WrapperNight nav,
+.WrapperNight > aside > section::after
+{
+    background-color: #868686 !important;
+}
+
+.WrapperNight > aside
+{
+    border: 1px solid #707070;
+}
+
+.WrapperNight div div div
+{
+    background-color: #757575 !important;
+}
+
+.WrapperNight input
+{
+    background-color: rgb(194, 192, 192) !important;
 }

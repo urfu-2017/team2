@@ -23,31 +23,32 @@ export default class Preview extends React.Component {
     }
 
     renderPreview() {
-        const attachments = this.props.chatPreviewState.attachments;
+        const { chatPreviewState } = this.props;
+        const attachments = chatPreviewState.attachments;
         if (!attachments) {
             return (<React.Fragment />);
         }
 
         return (
             <section className={styles.PreviewImgList}>
-                {this.props.chatPreviewState.error &&
+                {chatPreviewState.error &&
                     <Popup
                         open={true}
                         modal
                         closeOnEscape
                         contentStyle={this.defaultStyleOverride}
                         closeOnDocumentClick
-                        onClose={this.props.chatPreviewState.clearError
-                            .bind(this.props.chatPreviewState)}>
+                        onClose={chatPreviewState.clearError
+                            .bind(chatPreviewState)}>
                         {
                             (close) => (
                                 <div className={styles.PopupContainer}>
-                                    <span className={styles.ErrorMessage}>
-                                        {this.props.chatPreviewState.error}
-                                        { <span className={styles.PopupClose} onClick={close}>
-                                            ❌
-                                        </span>}
+                                    <span className={styles.PopupUserInfo}>
+                                        {chatPreviewState.error}
                                     </span>
+                                    { <span className={styles.PopupClose} onClick={close}>
+                                        ❌
+                                    </span>}
                                 </div>
                             )
                         }
@@ -59,8 +60,7 @@ export default class Preview extends React.Component {
                             : <img className={styles.Img} src={url}/>}
                         <button type="button" key={index} className={`${styles.CloseButton}
                             ${styles.Button}`}
-                        onClick={this.props.chatPreviewState
-                            .remove.bind(this.props.chatPreviewState, index)}>
+                        onClick={chatPreviewState.remove.bind(chatPreviewState, index)}>
                             <i className="material-icons">close</i>
                         </button>
                     </div>

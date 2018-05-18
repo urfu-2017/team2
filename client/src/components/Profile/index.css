@@ -1,4 +1,5 @@
-.Wrapper {
+.Wrapper,
+.WrapperNight {
     position: absolute;
 
     top: 50%;
@@ -16,6 +17,12 @@
     z-index: 1;
     background: #fffffa;
     box-shadow: 0 0 12px #00000034;
+}
+
+.WrapperNight
+{
+    background:rgb(112, 112, 112);
+    color: white;
 }
 
 .BackButton {

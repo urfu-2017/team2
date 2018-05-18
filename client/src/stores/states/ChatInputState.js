@@ -1,13 +1,15 @@
 /* eslint-disable no-invalid-this */
 import { observable, action } from 'mobx';
 import { emojiIndex } from 'emoji-mart';
+import ChatPreviewState from './ChatPreviewState';
 
 export default class ChatInputState {
 
-    constructor(state, dataStore, previewState) {
-        this.state = state;
+    constructor(dataStore, chatId, chatState) {
         this.dataStore = dataStore;
-        this.previewState = previewState;
+        this.previewState = new ChatPreviewState(dataStore);
+        this.chatId = chatId;
+        this.chatState = chatState;
     }
 
     @observable chatInput = '';
@@ -27,18 +29,20 @@ export default class ChatInputState {
         }
 
         if (this.previewState.uploadQueue.length > 0) {
+
             this.previewState.error = 'Wait until all files are loaded';
 
             return;
         }
         this.dataStore.sendMessage({
-            chatId: this.state.chatState.currentChat._id,
+            chatId: this.chatId,
             text: this.chatInput,
             attachments: this.previewState.attachments.slice()
         });
 
         this.previewState.attachments = [];
         this.chatInput = '';
+        this.chatState.scrollToEnd = true;
     };
 
     findEmoji = id => emojiIndex.search(id)

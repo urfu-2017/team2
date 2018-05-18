@@ -20,7 +20,7 @@
 }
 
 .Body code {
-    font-family: 'IBM Plex Mono';
+    font-family: 'IBM Plex Mono', serif;
 
     color: #aaa;
 }
@@ -30,7 +30,7 @@
 
     text-align: right;
 
-    color: #aaa;
+    color: rgb(218, 216, 216);
 }
 
 .BottomIcon > i
@@ -45,7 +45,8 @@
     vertical-align: middle;
 }
 
-.FromMe
+.FromMe,
+.FromMeNight
 {
     align-self: flex-end;
 }
@@ -53,15 +54,30 @@
 .FromMe .Wrapper {
     background: #e9fffb;
     border-radius: 8px 8px 0;
+    color: black;
 }
 
-.FromSomeone {
+.FromMeNight .Wrapper {
+    background: #a8a8a8;
+    border-radius: 8px 8px 0;
+    color: white;
+}
+
+.FromSomeone,
+.FromSomeoneNight {
     align-self: flex-start;
 }
 
 .FromSomeone .Wrapper {
     background: #fffffa;
     border-radius: 8px 8px 8px 0;
+    color: black;
+}
+
+.FromSomeoneNight .Wrapper {
+    background: #bdbaba;
+    border-radius: 8px 8px 8px 0;
+    color: white;
 }
 
 .FromMe .Time,
@@ -73,23 +89,23 @@
 {
     display: flex;
     flex-wrap: wrap;
+    cursor: pointer;
 }
 
 .Img
 {
     height: 150px;
-    object-fit: contain;
-    margin: 0 -4px;
+    margin: 0 2px 4px;
 }
 
 .Message:hover .MessageActions
 {
-    display: block;
+    visibility: visible;
 }
 
 .MessageActions
 {
-    display: none;
+    visibility: hidden;
     height: 20px;
     border: 1px solid rgb(218, 218, 218);
     background: white;
@@ -156,3 +172,73 @@
         max-width: 250px;
     }
 }
+
+.ImgContainer {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    background-color: #8080804f;
+    left:0;
+}
+
+.ImgBig
+{
+    width: 100%;
+    height: 100%;
+}
+
+.PopupContainer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+.Photo {
+    font-size: 22px;
+    width: 100%;
+    text-align: center;
+}
+
+
+.PopupNext
+{
+    opacity: .5;
+    position: absolute;
+    right: 1%;
+    top: 50%;
+    color: rgb(66, 65, 65);
+    font-size: 22px;
+    cursor: pointer;
+    background-color: rgba(220, 220, 220, 0.356);
+    padding: 5px 10px;
+}
+
+.PopupPrev
+{
+    opacity: .5;
+    position: absolute;
+    right: 91%;
+    top: 50%;
+    color:rgb(66, 65, 65);
+    font-size: 22px;
+    cursor: pointer;
+    background-color: rgba(220, 220, 220, 0.356);
+    padding: 5px 10px;
+}
+
+.PopupPrev:hover,
+.PopupNext:hover,
+.PopupClose:hover
+{
+    opacity: 1;
+}
+
+.PopupClose {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: rgb(153, 153, 153);
+    font-size: 22px;
+    cursor: pointer;
+}
+

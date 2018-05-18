@@ -1,3 +1,42 @@
+.EmojiPickerStyle,
+.EmojiPickerStyleNight,
+.EmojiPicker
+{
+    position: absolute;
+    top: 0;
+    height: 0;
+}
+
+.EmojiPickerStyleNight > aside
+{
+    border: 1px solid #707070;
+}
+
+.EmojiPickerStyleNight > aside,
+.EmojiPickerStyleNight nav,
+.EmojiPickerStyleNight > aside > section::after
+{
+    background-color: #868686 !important;
+}
+
+.CloseButton
+{
+    position: absolute;
+    margin-top: 3px;
+    color: white;
+    transform: scale(.9);
+}
+
+.EmojiPickerStyleNight div div div
+{
+    background-color: #757575 !important;
+}
+
+.EmojiPickerStyleNight   input
+{
+    background-color: rgb(194, 192, 192) !important;
+}
+
 .Wrapper {
     flex-grow: 2;
 
@@ -15,12 +54,6 @@
     align-self: center;
 }
 
-.EmojiPicker
-{
-    position: absolute;
-    top: 0;
-    height: 0;
-}
 
 .DatetimePicker
 {

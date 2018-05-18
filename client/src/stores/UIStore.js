@@ -1,26 +1,27 @@
 /* eslint-disable no-invalid-this */
 import { observable, computed, action, autorun } from 'mobx';
 import * as States from '../enum/LoadState';
-import ChatInputState from './states/ChatInputState';
-import ChatState from './states/ChatState';
 import ChatListState from './states/ChatListState';
-import ChatPreviewState from './states/ChatPreviewState';
 import ReactionSelectorState from './states/ReactionSelectorState';
 import ChatCreateState from './states/ChatCreateState';
 import AlarmState from './states/AlarmState';
+import ChatsState from './states/ChatsState';
 
 export default class UIStore {
 
     constructor(dataStore) {
         this.dataStore = dataStore;
-        this.chatState = new ChatState(this.dataStore);
-        this.chatListState = new ChatListState(this.dataStore);
+        this.chatListState = new ChatListState(this.dataStore, this);
+        this.chatsState = new ChatsState(this.dataStore, this, this.chatListState);
         this.chatCreateState = new ChatCreateState(this.dataStore);
-        this.chatPreviewState = new ChatPreviewState(this.dataStore);
-        this.chatInputState =
-            new ChatInputState(this, this.dataStore, this.chatPreviewState);
         this.reactionSelectorState = new ReactionSelectorState(this.dataStore);
         this.alarmState = new AlarmState(this.dataStore);
+
+        autorun(() => {
+            if (dataStore.loadingState === States.LOADED) {
+                this.onLoadQueue.forEach(fc => fc());
+            }
+        });
 
         autorun(() => {
             if (this.dataStore.profile.avatar) {
@@ -29,17 +30,40 @@ export default class UIStore {
         });
     }
 
+    @observable onLoadQueue = [];
+
     @observable loadAvatar = false;
 
     @observable mainView = {
         showContacts: true,
         showChat: true,
-        showProfile: false
+        showProfile: false,
+        isNightTheme: localStorage.getItem('isNightTheme') === 'true'
     };
+
+    @action toggleNightMode = () => {
+        this.mainView.isNightTheme = !this.mainView.isNightTheme;
+        localStorage.setItem('isNightTheme', this.mainView.isNightTheme);
+    }
 
     @computed
     get loaderState() {
         return getLoaderState(this.dataStore.loadingState);
+    }
+
+    @computed
+    get chatState() {
+        return this.chatsState.chatState;
+    }
+
+    @computed
+    get chatInputState() {
+        return this.chatsState.chatState.inputState;
+    }
+
+    @computed
+    get chatPreviewState() {
+        return this.chatsState.chatState.previewState;
     }
 
     @computed
@@ -65,10 +89,11 @@ export default class UIStore {
     };
 
     @action addAttachment = (attachment) => {
-        this.chatPreviewState.addAttachment(attachment);
+        this.chatsState.addAttachment(attachment);
     };
 
     @action setSearchResults = (searchResults) => {
+        this.chatListState.inSearch = false;
         if (searchResults) {
             this.chatListState.searchResults = searchResults
                 .filter(chat => chat.login !== this.dataStore.profile.login);
@@ -76,6 +101,10 @@ export default class UIStore {
             this.chatListState.searchResults = [];
         }
     };
+
+    @action setCurrentChat = chat => {
+        this.chatListState.currentChat = chat;
+    }
 }
 
 function getLoaderState(loadingState) {

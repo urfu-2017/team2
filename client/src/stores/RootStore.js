@@ -6,7 +6,7 @@ import * as States from '../enum/LoadState';
 
 export default class RootStore {
     constructor(webWorker) {
-        this.dataStore = new DataStore(this, webWorker);
+        this.dataStore = new DataStore(webWorker);
         this.state = new UIStore(this.dataStore, webWorker);
         initWorker(webWorker, this.dataStore, this.state);
     }
@@ -39,10 +39,13 @@ function initWorker(webWorker, dataStore, state) {
     });
 
     webWorker.subscribe('SendMessage', (error, result) => {
-        dataStore.messageDidSent(result);
         if (error) {
             console.info(error);
+
+            return;
         }
+
+        dataStore.messageDidSent(result);
     });
 
     webWorker.subscribe('GetProfile', (error, profile) => {
@@ -113,7 +116,7 @@ function initWorker(webWorker, dataStore, state) {
             return;
         }
 
-        dataStore.setChatHistory(data.chatId, data.messages);
+        dataStore.setChatHistory(data.chatId, data.messages, data.totalCount);
     });
 
     webWorker.subscribe('AddContact', (error, chat) => {
@@ -161,6 +164,18 @@ function initWorker(webWorker, dataStore, state) {
         }
         console.info('New chat user');
         dataStore.userJoined(chat);
+    });
+
+    webWorker.subscribe('JoinChat', (error, chat) => {
+        if (error) {
+            console.error('Join error', error);
+        }
+
+        dataStore.setLoadingState(States.LOADED);
+        console.info(chat);
+        dataStore.addChats([chat]);
+        webWorker.getMessages({ chatId: chat._id, limit: 50, offset: 0 });
+        state.setCurrentChat(chat);
     });
 
 }

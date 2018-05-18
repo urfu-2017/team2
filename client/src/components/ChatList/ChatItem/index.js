@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Avatar from '../../Contact/Avatar';
 import styles from './index.css';
+import { observer, inject } from 'mobx-react';
 
+@inject('state') @observer
 export default class ChatItem extends Component {
     constructor(props) {
         super(props);
@@ -11,11 +13,12 @@ export default class ChatItem extends Component {
     static dayInterval = 1000 * 60 * 60 * 24;
     static weekInterval = 1000 * 60 * 60 * 24 * 7;
     static propTypes = {
+        state: PropTypes.object,
         current: PropTypes.bool.isRequired,
         photoURL: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
         lastMessage: PropTypes.string,
-        lastMessageDate: PropTypes.string,
+        lastMessageDate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         onClick: PropTypes.func.isRequired
     };
 
@@ -27,7 +30,8 @@ export default class ChatItem extends Component {
     render() {
         return (
             <a style={this.props.current ? ChatItem.currentStyle : {}}
-                className={styles.Wrapper} onClick={this.props.onClick}>
+                className={this.props.state.mainView.isNightTheme
+                    ? styles.Wrapper : styles.WrapperNight} onClick={this.props.onClick}>
                 <Avatar src={this.props.photoURL} size={52} />
                 <span className={styles.Name}>
                     {this.props.name}

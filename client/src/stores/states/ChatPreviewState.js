@@ -37,13 +37,20 @@ export default class ChatPreviewState {
             sizeSum += file.size;
         });
 
+        let fileFormat = false;
+
+
         Object.values(files).forEach(file => {
             if (this.FILE_FORMAT.indexOf(file.type) === -1) {
-                this.error = 'This file fomat isn`t supported';
+                fileFormat = true;
             }
+        });
+
+        if (fileFormat) {
+            this.error = 'This file fomat isn`t supported';
 
             return;
-        });
+        }
 
         if (sizeSum >= this.FILE_SIZE_LIMIT * 1024 * 1024) {
             this.error = `Only ${this.FILE_SIZE_LIMIT}MB files can be loaded`;

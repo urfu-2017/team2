@@ -1,3 +1,4 @@
+/* eslint-disable complexity*/
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { PropTypes as MobxPropsTypes } from 'mobx-react';
@@ -5,17 +6,19 @@ import OGAttachment from
     './OGAttachment';
 import styles from './index.css';
 import { inject, observer } from 'mobx-react';
+import Popup from 'reactjs-popup';
 
-@inject('reactionSelectorState', 'alarmState') @observer
+@inject('reactionSelectorState', 'alarmState', 'state') @observer
 export default class UserMessage extends Component {
     constructor(props) {
         super(props);
+        this.ref = null;
     }
 
     static propTypes = {
         reactionSelectorState: MobxPropsTypes.observableObject,
         alarmState: MobxPropsTypes.observableObject,
-
+        state: PropTypes.object,
         id: PropTypes.string,
         fromMe: PropTypes.bool.isRequired,
         isSent: PropTypes.bool,
@@ -90,43 +93,78 @@ export default class UserMessage extends Component {
         );
     }
 
+    onClick(e) {
+        this.props.state.chatState.fullSizeImg = true;
+        this.props.state.chatState.file = e.target.getAttribute('src');
+    }
+
     render() {
         const className =
             `${styles.Message} ${this.props.fromMe ? styles.FromMe : styles.FromSomeone}`;
+        const classNameNight =
+            `${styles.Message} ${this.props.fromMe ? styles.FromMeNight : styles.FromSomeoneNight}`;
 
         return (
-            <div className={className}>
+            <div className={this.props.state.mainView.isNightTheme
+                ? className : classNameNight} ref={el => {
+                this.ref = el;
+            }}>
                 {this.getActionButtons()}
                 <div style={{ clear: 'both' }}/>
                 <div className={styles.Wrapper}>
                     <span className={styles.Name}>{this.props.name}</span>
                     <div className={styles.Body}
-                        dangerouslySetInnerHTML={{ __html: this.props.body }}
-                    />
+                        dangerouslySetInnerHTML={{ __html: this.props.body }}/>
                     {this.props.og &&
-                        <OGAttachment
-                            url={this.props.og.requestUrl}
-                            title={this.props.og.data.ogTitle}
-                            description={this.props.og.data.ogDescription}
-                            image={this.props.og.data.ogImage} />}
+                    <OGAttachment
+                        url={this.props.og.requestUrl}
+                        title={this.props.og.data.ogTitle}
+                        description={this.props.og.data.ogDescription}
+                        image={this.props.og.data.ogImage}/>}
                     <time className={styles.Time}>
-                        <span>{this._formatDate(this.props.createdAt)}</span>
+                        {this._formatDate(this.props.createdAt)}
 
                         {(this.props.fromMe && !this.props.isSent) &&
-                            <span className={styles.BottomIcon}>
-                                <i className="material-icons">schedule</i>
-                            </span>
+                        <span className={styles.BottomIcon}>
+                            <i className="material-icons">schedule</i>
+                        </span>
                         }
                     </time>
                     {this.props.attachments
                         ? <div className={styles.ImageWrapper}>
                             {this.props.attachments.map((attachment, index) => (
-                                <img key={index} src={attachment} className={styles.Img}/>
+                                <img key={index} src={attachment}
+                                    className={styles.Img}
+                                    onClick={this.onClick.bind(this)}/>
                             ))}
                         </div>
                         : null}
-                </div>
 
+                    {this.props.state.chatState.fullSizeImg &&
+                <Popup
+                    open={true}
+                    modal
+                    closeOnEscape
+                    closeOnDocumentClick
+                    onClose={this.props.state.chatState.changeFullSizeImg
+                        .bind(this.props.state.chatState)}>
+
+                    {
+                        (close) => (
+                            <div className={styles.PopupContainer}>
+                                <span className={styles.Photo}>
+                                    <img src={this.props.state.chatState.file}
+                                        className={styles.ImgBig}/>
+                                    { <span className={styles.PopupClose}
+                                        onClick={close}>
+                                    ❌
+                                    </span>}
+                                </span>
+                            </div>
+                        )
+                    }
+                </Popup>}
+                </div>
                 <div className={styles.Reactions}>
                     {this.getReactions()}
                 </div>

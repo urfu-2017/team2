@@ -8,7 +8,7 @@ export default class Avatar extends Component {
     }
 
     static propTypes = {
-        src: PropTypes.string.isRequired,
+        src: PropTypes.string,
         size: PropTypes.number
     };
 

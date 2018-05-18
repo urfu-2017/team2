@@ -5,54 +5,57 @@ import styles from './index.css';
 import ChatEmojiPicker from '../ChatEmojiPicker';
 import Preview from '../ChatPreview';
 
-@inject('chatInputState', 'chatPreviewState') @observer
+@inject('state') @observer
 export default class ChatInput extends React.Component {
     constructor(props) {
         super(props);
     }
 
     static propTypes = {
-        chatInputState: PropTypes.observableObject,
-        chatPreviewState: PropTypes.observableObject
+        state: PropTypes.observableObject
     };
 
     submitHandler(event) {
         event.preventDefault();
-        this.props.chatInputState.submit();
+        this.props.state.chatInputState.submit();
     }
 
     changeHandler(event) {
         event.preventDefault();
-        this.props.chatInputState.change(event.target.value);
+        this.props.state.chatInputState.change(event.target.value);
     }
 
     emojiButtonClick() {
-        this.props.chatInputState.toggleEmojiList();
+        this.props.state.chatInputState.toggleEmojiList();
         this.chatInput.focus();
     }
 
     render() {
+        const { chatInputState } = this.props.state;
+
         return (
             <div>
-                {this.props.chatInputState.showEmojiList
+                {chatInputState.showEmojiList
                     ? <ChatEmojiPicker
-                        onEmojiClick={this.props.chatInputState.addEmojiIntoText
-                            .bind(this.props.chatInputState)}
-                        onMouseLeave={this.props.chatInputState.toggleEmojiList
-                            .bind(this.props.chatInputState)}/>
+                        onEmojiClick={chatInputState.addEmojiIntoText
+                            .bind(chatInputState)}
+                        onMouseLeave={chatInputState.toggleEmojiList
+                            .bind(chatInputState)}/>
                     : null}
                 <article className={styles.SendBar}>
-                    <form id="send-message-form" className={styles.Wrapper}
-                        onSubmit={this.submitHandler.bind(this)}>
-                        <Preview chatPreviewState={this.props.chatPreviewState}/>
-                        <input type="text" className={styles.Input}
-                            value={this.props.chatInputState.chatInput}
-                            placeholder=" Write a message..."
-                            onChange={this.changeHandler.bind(this)}
-                            ref={(input) => {
-                                this.chatInput = input;
-                            }}
-                            autoFocus/>
+                    <form id="send-message-form" className={this.props.state.mainView.isNightTheme
+                        ? styles.Wrapper : styles.WrapperNight}
+                    onSubmit={this.submitHandler.bind(this)}>
+                        <Preview chatPreviewState={this.props.state.chatPreviewState}/>
+                        <input type="text" className={this.props.state.mainView.isNightTheme
+                            ? styles.Input : styles.InputNight}
+                        value={chatInputState.chatInput}
+                        placeholder=" Write a message..."
+                        onChange={this.changeHandler.bind(this)}
+                        ref={(input) => {
+                            this.chatInput = input;
+                        }}
+                        autoFocus/>
                         <button type="button" className={`${styles.EmojiButton} ${styles.Button}`}
                             onClick={this.emojiButtonClick.bind(this)}>
                             <i className="material-icons">tag_faces</i>

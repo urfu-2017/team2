@@ -1,11 +1,18 @@
-.Wrapper
+.Wrapper,
+.WrapperNight
 {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
 }
 
-.Input
+.WrapperNight
+{
+    background: rgb(112, 112, 112);
+}
+
+.Input,
+.InputNight
 {
     padding: 15.5px 10px 16.5px;
     width: calc(100% - 3 * (2% + 18px));
@@ -19,7 +26,13 @@
 
 }
 
-.Input:focus
+::placeholder {
+    color: rgb(199, 199, 199);
+}
+
+
+.Input:focus,
+.InputNight:focus
 {
     outline: none;
 }
@@ -30,13 +43,19 @@
     margin: auto 16px auto 0;
     padding: 0;
 
-    color: #757575;
+    color: #474747;
     text-decoration: none;
     user-select: none;
     background: transparent;
     outline: none;
     border: 0;
     width: 2%;
+}
+
+.InputNight
+{
+    color: white;
+    background: rgb(112, 112, 112);
 }
 
 .Button:active

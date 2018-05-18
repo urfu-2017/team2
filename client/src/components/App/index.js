@@ -1,3 +1,4 @@
+/* eslint-disable complexity*/
 import React, { Component } from 'react';
 import ReactPropTypes from 'prop-types';
 import { observer, inject, Provider } from 'mobx-react';
@@ -7,7 +8,7 @@ import Chat from '../Chat';
 import ServiceMessage from '../Chat/ChatHistory/ServiceMessage';
 import styles from './index.css';
 import ChatItem from '../ChatList/ChatItem/index';
-import UserMessage from '../Chat/ChatHistory/UserMessage/index';
+
 import Popup from 'reactjs-popup';
 import AlarmSound from './alarm.mp3';
 import Sound from 'react-sound';
@@ -31,54 +32,32 @@ export default class App extends Component {
     render() {
         const { dataStore, state } = this.props.rootStore;
         const {
-            chatState,
-            chatListState,
-            chatInputState,
-            chatPreviewState,
-            reactionSelectorState,
             chatCreateState,
+            chatListState,
+            reactionSelectorState,
             alarmState
         } = state;
 
         const chatList = chatListState.chatsToDisplay.map(chat => (
             <ChatItem key={chat._id}
-                current={chat._id === chatState.currentChat._id}
+                current={chat._id === chatListState.currentChat._id}
                 photoURL={chat.avatar}
                 name={chat.name}
                 lastMessage={chat.lastMessage.body}
                 lastMessageDate={chat.lastMessage.createdAt}
-                onClick={chatState.selectChat.bind(chatState, chat)}/>
+                onClick={chatListState.selectChat.bind(chatListState, chat)}/>
         ));
-
-        const chatHistory = chatState.currentChatHistory.map(message => message.isService
-            ? <ServiceMessage key={message._id} text={message.text}/>
-            : (
-                <UserMessage
-                    key={message._id || message.tempId}
-                    id={message._id}
-                    fromMe={message.from === dataStore.profile._id}
-                    isSent={Boolean(message._id)}
-                    name={(!chatState.currentChat.dialog &&
-                        message.from !== dataStore.profile._id) ? message.fromLogin : ''}
-                    body={message.body}
-                    createdAt={message.createdAt}
-                    attachments={message.attachments}
-                    reactions={message.reactions || {}}
-                    og={message.og}/>
-            ));
 
         const { loaderState, message } = state.loaderState;
 
         return (
-            <Provider chatInputState={chatInputState}
-                state={state}
+            <Provider
                 chatListState={chatListState}
-                chatPreviewState={chatPreviewState}
-                chatState={chatState}
-                reactionSelectorState={reactionSelectorState}
                 chatCreateState={chatCreateState}
+                reactionSelectorState={reactionSelectorState}
                 alarmState={alarmState}
-            >
+                state={state}
+                dataStore={dataStore}>
                 <div className={styles.Wrapper}>
                     <div className={styles.LoadingScreen}
                         style={{ display: loaderState ? 'flex' : 'none' }}>
@@ -91,14 +70,15 @@ export default class App extends Component {
                     <ChatList>
                         {chatList}
                     </ChatList>}
-                    {chatState.currentChat.name
-                        ? <Chat name={chatState.currentChat.name}
-                            avatar={chatState.currentChat.avatar}
-                            inviteLink={chatState.currentChat.inviteLink}>
-                            {chatHistory}
+                    {chatListState.currentChat.name
+                        ? <Chat name={chatListState.currentChat.name}
+                            avatar={chatListState.currentChat.avatar}
+                            inviteLink={chatListState.currentChat.inviteLink}
+                            dialog={chatListState.currentChat.dialog}>
                         </Chat>
-                        : <div className={styles.StubWrapper}
-                            onClick={state.closeProfile.bind(state)}>
+                        : <div className={state.mainView.isNightTheme
+                            ? styles.StubWrapper : styles.StubWrapperNight}
+                        onClick={state.closeProfile.bind(state)}>
                             <ServiceMessage text="Please select a chat to start messaging"/>
                         </div>}
                     {state.mainView.showProfile &&
@@ -122,7 +102,8 @@ export default class App extends Component {
                         contentStyle={this.defaultStyleOverride}
                     >
                         {close => (
-                            <div className={styles.PopupContainer}>
+                            <div className={state.mainView.isNightTheme
+                                ? styles.PopupContainer : styles.PopupContainerNight}>
                                 <span className={styles.PopupUserInfo}>
                             Alarm!
                                 </span>

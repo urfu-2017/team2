@@ -9,7 +9,7 @@ export default class ServiceMessage extends Component {
 
     static propTypes = {
         text: PropTypes.string.isRequired
-    }
+    };
 
     render() {
         return (

@@ -5,9 +5,8 @@ import { v4 as uuid } from 'uuid';
 
 export default class DataStore {
 
-    constructor(rootStore, webWorker) {
+    constructor(webWorker) {
         this.webWorker = webWorker;
-        this.rootStore = rootStore;
         this.loadProfile();
 
         this._messagesForSend = {};
@@ -23,12 +22,13 @@ export default class DataStore {
 
     @observable chatHistories = new Map();
 
-    @action setChatHistory = (chatId, messages) => {
+    @action setChatHistory = (chatId, messages, totalCount) => {
         const chatHistory = this.chatHistories.get(chatId);
         if (chatHistory) {
-            chatHistory.unshift(...messages);
+            chatHistory.messages.unshift(...messages);
+            chatHistory.totalCount = totalCount;
         } else {
-            this.chatHistories.set(chatId, messages);
+            this.chatHistories.set(chatId, { messages, totalCount });
         }
     };
 
@@ -44,7 +44,7 @@ export default class DataStore {
         this.chatList.push(...chats.map(initChat.bind(this)));
         chats.forEach(chat => {
             if (!this.chatHistories.has(chat._id)) {
-                this.chatHistories.set(chat._id, []);
+                this.chatHistories.set(chat._id, { messages: [], totalCount: 0 });
             }
         });
     };
@@ -52,10 +52,10 @@ export default class DataStore {
     @action addReaction = (result) => {
         const index = this.chatHistories
             .get(result.chatId)
-            .findIndex(msg => msg._id === result.messageId);
+            .messages.findIndex(msg => msg._id === result.messageId);
 
         if (index !== -1) {
-            const message = this.chatHistories.get(result.chatId)[index];
+            const message = this.chatHistories.get(result.chatId).messages[index];
             if (!message.reactions) {
                 message.reactions = {};
             }
@@ -81,12 +81,13 @@ export default class DataStore {
 
             message.reactions = Object.assign({}, message.reactions);
 
-            this.chatHistories.get(result.chatId)[index] = Object.assign({}, message);
+            this.chatHistories.get(result.chatId).messages[index] = Object.assign({}, message);
         }
     };
 
     @action addMessage = (message) => {
-        this.chatHistories.get(message.chatId).push(message);
+        this.liftChat(message);
+        this.chatHistories.get(message.chatId).messages.push(message);
     };
 
     @action addContact = (userId) => {
@@ -112,9 +113,13 @@ export default class DataStore {
             chatId,
             tempId
         };
-        this.chatHistories.get(chatId).push(messageForStore);
+        this.chatHistories.get(chatId).messages.push(messageForStore);
         this._setSendMessageTimeout(messageForStore);
         this._dumpMessagesForSend();
+    };
+
+    @action loadMoreMessages = (chatId, offset, limit) => {
+        this.webWorker.getMessages({ chatId, offset, limit });
     };
 
     @action messageDidSent = (message) => {
@@ -122,17 +127,17 @@ export default class DataStore {
         delete this._messagesForSend[message.tempId];
         this._dumpMessagesForSend();
 
+        this.liftChat(message);
         const index = this.chatHistories
             .get(message.chatId)
-            .findIndex(msg => msg.tempId === message.tempId);
+            .messages.findIndex(msg => msg.tempId === message.tempId);
 
         if (index !== -1) {
-            this.chatHistories.get(message.chatId)[index] = message;
+            this.chatHistories.get(message.chatId).messages[index] = message;
         }
     };
 
     @action searchByLogin = (userId) => {
-        this.loadingState = States.SEARCH_CONTACTS;
         this.webWorker.searchByLogin(userId);
     };
 
@@ -176,6 +181,11 @@ export default class DataStore {
         this.chatList[listIndex].name = chatName;
     };
 
+    @action joinChat = inviteLink => {
+        this.loadingState = States.ADD_CHAT;
+        this.webWorker.joinChat(inviteLink);
+    };
+
     @action userJoined = (chat) => {
         const index = this.chatList.findIndex(listChat => listChat._id === chat._id);
         this.setChatName(index, chat.name);
@@ -188,14 +198,22 @@ export default class DataStore {
         this.addMessage(message);
     };
 
+    liftChat(message) {
+        const index = this.chatList.findIndex(chat => chat._id === message.chatId);
+        const chatCopy = this.chatList.slice();
+        const chat = chatCopy.splice(index, 1)[0];
+        chatCopy.unshift(chat);
+        this.chatList = chatCopy;
+    }
+
     getLastChatMessage(chat) {
         const chatHistory = this.chatHistories.get(chat._id);
 
-        if (!(chatHistory && chatHistory[chatHistory.length - 1])) {
+        if (!(chatHistory && chatHistory.messages[chatHistory.messages.length - 1])) {
             return '';
         }
 
-        return chatHistory[chatHistory.length - 1];
+        return chatHistory.messages[chatHistory.messages.length - 1];
     }
 
     restoreMessagesForSend() {
@@ -206,10 +224,10 @@ export default class DataStore {
                 this._setSendMessageTimeout(message);
 
                 if (!this.chatHistories.has(message.chatId)) {
-                    this.chatHistories.set(message.chatId, []);
+                    this.chatHistories.set(message.chatId, { messages: [], totalCount: 0 });
                 }
 
-                this.chatHistories.get(message.chatId).push(message);
+                this.chatHistories.get(message.chatId).messages.push(message);
             });
         }
     }

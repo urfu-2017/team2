@@ -1,18 +1,51 @@
 /* eslint-disable no-invalid-this */
 import { observable, action, computed } from 'mobx';
+import * as States from '../../enum/LoadState';
 
 export default class ChatListState {
-    constructor(dataStore) {
+    constructor(dataStore, state) {
         this.dataStore = dataStore;
+        this.state = state;
     }
 
-    @observable chatInput = '';
+    @observable searchInput = '';
     @observable searchResults = [];
+    @observable currentChat = {};
+    @observable inSearch = false;
     @observable isCreating = false;
 
+    @action selectChat = (chat) => {
+        this.currentChat = chat;
+    };
+
+    @action closeChat = () => {
+        this.currentChat = {};
+    };
+
+    @action selectChatByName = (name) => {
+        if (this.dataStore.loadingState !== States.LOADED) {
+            this.state.onLoadQueue.push(this.selectChatByName.bind(this, name));
+
+            return;
+        }
+        this.currentChat = this.chatsToDisplay.find(chat => chat.name === name) || {};
+    };
+
+    @action joinChat = link => {
+        if (this.dataStore.loadingState !== States.LOADED) {
+            this.state.onLoadQueue.push(this.joinChat.bind(this, link));
+
+            return;
+        }
+
+        this.dataStore.joinChat(link);
+        // this.currentChat = this.chatsToDisplay.find(chat => chat.inviteLink === link);
+    };
+
     @action change = (inputText) => {
-        this.chatInput = inputText;
-        this.dataStore.searchByLogin(this.chatInput);
+        this.searchInput = inputText;
+        this.inSearch = true;
+        this.dataStore.searchByLogin(this.searchInput);
     };
 
     @action addContact = (login) => {
@@ -37,12 +70,21 @@ export default class ChatListState {
     get chatsToDisplay() {
         return this.dataStore.chatList.filter(chat => {
             return chat.name.toLowerCase()
-                .indexOf(this.chatInput.toLowerCase()) !== -1;
+                .indexOf(this.searchInput.toLowerCase()) !== -1;
         }).map(chat => {
             chat.lastMessage = this.dataStore.getLastChatMessage(chat);
 
             return chat;
         });
+    }
+
+    @computed
+    get currentPath() {
+        if (this.currentChat.name) {
+            return `#/im/${this.currentChat.name}`;
+        }
+
+        return '#/im';
     }
 
     @computed

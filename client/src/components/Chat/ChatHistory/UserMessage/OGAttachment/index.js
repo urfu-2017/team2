@@ -17,7 +17,7 @@ export default class OGAttachment extends Component {
         title: PropTypes.string,
         description: PropTypes.string,
         image: PropTypes.object
-    }
+    };
 
     render() {
         return (
