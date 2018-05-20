@@ -22,13 +22,22 @@ export default class ChatListState {
         this.currentChat = {};
     };
 
-    @action selectChatByName = (name) => {
+    @action findChat = query => {
         if (this.dataStore.loadingState !== States.LOADED) {
-            this.state.onLoadQueue.push(this.selectChatByName.bind(this, name));
+            this.state.onLoadQueue.push(this.selectChat.bind(this, query));
 
             return;
         }
-        this.currentChat = this.chatsToDisplay.find(chat => chat.name === name) || {};
+        const chat = this.selectChatByName(query) || this.selectChatById(query);
+        this.selectChat(chat);
+    };
+
+    @action selectChatByName = name => {
+        return this.chatsToDisplay.find(chat => chat.dialog && chat.name === name);
+    };
+
+    @action selectChatById = id => {
+        return this.chatsToDisplay.find(chat => !chat.dialog && chat._id === id);
     };
 
     @action joinChat = link => {
@@ -37,9 +46,7 @@ export default class ChatListState {
 
             return;
         }
-
         this.dataStore.joinChat(link);
-        // this.currentChat = this.chatsToDisplay.find(chat => chat.inviteLink === link);
     };
 
     @action change = (inputText) => {
@@ -80,8 +87,12 @@ export default class ChatListState {
 
     @computed
     get currentPath() {
-        if (this.currentChat.name) {
+        if (this.currentChat.dialog && this.currentChat.name) {
             return `#/im/${this.currentChat.name}`;
+        }
+
+        if (this.currentChat._id) {
+            return `#/im/${this.currentChat._id}`;
         }
 
         return '#/im';

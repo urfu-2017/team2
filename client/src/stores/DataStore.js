@@ -49,7 +49,18 @@ export default class DataStore {
                 this.chatHistories.set(chat._id, { messages: [], totalCount: 0 });
             }
         });
+        this.sortChats();
     };
+
+    @action sortChats() {
+        this.chatList = this.chatList
+            .slice(0, 1)
+            .concat(this.chatList.slice(1).sort((first, second) => {
+
+                return Date.parse(second.createdAt) -
+                    Date.parse(first.createdAt);
+            }));
+    }
 
     @action addReaction = (result) => {
         const index = this.chatHistories
@@ -273,7 +284,6 @@ function initChat(chat) {
     const user = chat.users.find(entry => entry._id !== this.profile._id);
 
     if (!user) {
-        console.info('empty chat');
         chat.name = 'Empty';
         chat.avatar = chat.users[0].avatar;
 

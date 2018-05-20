@@ -19,7 +19,6 @@ export default class ChatCreateState {
         } else {
             this.selectedContacts.push(contact);
         }
-        console.info(this.selectedContacts);
     };
 
     @action createChat = () => {
@@ -28,6 +27,10 @@ export default class ChatCreateState {
         }
         this.dataStore.createChat(Array.from(this.selectedContacts).map(contact => contact._id));
         this.isCreating = false;
+        this.selectedContacts.clear();
+    };
+
+    @action clearSelected = () => {
         this.selectedContacts.clear();
     };
 

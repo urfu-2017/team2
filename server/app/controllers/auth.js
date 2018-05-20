@@ -2,12 +2,24 @@
 
 const passport = require('passport');
 const config = require('config');
+const { URL } = require('url');
 
 module.exports = app => {
     // Главная страница
     app.get(
         '/',
         (req, res) => {
+            if (req.query.join) {
+                const fullUrl = new URL(`#/join/${req.query.join}`, config.get('clientHost'));
+                if (req.isAuthenticated()) {
+                    res.redirect(fullUrl);
+                } else {
+                    req.session.join = fullUrl;
+                    res.redirect(`${config.get('host')}/login`);
+                }
+
+                return;
+            }
             if (req.isAuthenticated()) {
                 res.render('app', { staticPath: config.get('staticPath') });
             } else {
@@ -31,7 +43,12 @@ module.exports = app => {
         // Если не удачно, то отправляем на /
         passport.authenticate('github', { failureRedirect: '/error' }),
         (req, res) => {
-            res.redirect(config.get('clientHost'));
+            const invite = req.session.join;
+            if (!invite) {
+                res.redirect(config.get('clientHost'));
+            } else {
+                res.redirect(req.session.join);
+            }
         }
     );
 
