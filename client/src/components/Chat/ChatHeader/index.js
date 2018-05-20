@@ -32,7 +32,6 @@ export default class ChatHeader extends Component {
         state: PropTypes.object,
         avatar: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
-        status: PropTypes.string,
         inviteLink: PropTypes.string,
         dialog: PropTypes.bool
     };
@@ -60,9 +59,9 @@ export default class ChatHeader extends Component {
 
     render() {
         return (
-            <div className={this.props.state.mainView.isNightTheme
+            <div className={!this.props.state.mainView.isNightTheme
                 ? styles.Wrapper : styles.WrapperNight}>
-                <button form="send-message-form" type="submit"
+                <button form="send-message-form" type="button"
                     className={this.props.state.mainView.isNightTheme
                         ? styles.BackButton : styles.BackButtonNight}
                     onClick={() => this.props.state.chatListState.closeChat()}>
@@ -75,9 +74,6 @@ export default class ChatHeader extends Component {
                         <a className={styles.Info}>
                             <span className={styles.Name}>
                                 {this.props.name}
-                            </span>
-                            <span className={styles.Status}>
-                                {this.props.status}
                             </span>
                         </a>
                     }

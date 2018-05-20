@@ -60,6 +60,9 @@ export default class MessageNotificationState {
 
     createBodyForNotification(messageForNotification) {
         let body = messageForNotification.body;
+        if (!body) {
+            return '';
+        }
         body = body.replace(/<p>/g, '')
             .replace(/<em>/g, '')
             .replace(/<code>/g, '')

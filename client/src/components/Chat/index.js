@@ -62,7 +62,7 @@ export default class Chat extends Component {
                 onClick={this.props.state.closeProfile.bind(this.props.state)}>
                 {this.props.alarmState.show &&
                 <div className={styles.DatetimePicker}
-                    style={this.props.state.mainView.isNightTheme
+                    style={!this.props.state.mainView.isNightTheme
                         ? alarmStyle : alarmStyleNight}>
                     <InputMoment
                         lol={this.props.alarmState.key}
@@ -75,7 +75,7 @@ export default class Chat extends Component {
                 </div>
                 }
                 {this.props.reactionSelectorState.show &&
-                    <div className={this.props.state.mainView.isNightTheme
+                    <div className={!this.props.state.mainView.isNightTheme
                         ? styles.EmojiPickerStyle : styles.EmojiPickerStyleNight}
                     style={emojiPickerStyle}>
                         <EmojiPicker
@@ -84,7 +84,6 @@ export default class Chat extends Component {
                 }
                 <ChatHeader avatar={this.props.avatar}
                     name={this.props.name}
-                    status={'online'}
                     inviteLink={this.props.inviteLink}
                     dialog={this.props.dialog}/>
                 <ChatHistory/>

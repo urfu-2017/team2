@@ -8,7 +8,7 @@
     background: #fffffa;
     box-shadow: 0 0 12px #00000034;
     box-sizing: border-box;
-    cursor: pointer;
+
     border: thin dashed transparent;
 
 }
@@ -35,6 +35,7 @@
     padding: 2px 8px 0 0;
     font-size: 22px;
     color: #aaa;
+    cursor: pointer;
 }
 
 .BackButton:hover i,
@@ -53,6 +54,7 @@
 
 .Name {
     font-weight: 600;
+    cursor: pointer;
 }
 
 .Name:hover {

@@ -20,7 +20,7 @@ export default class ChatEmojiPicker extends Component {
 
     render() {
         return (
-            <div className={this.props.state.mainView.isNightTheme
+            <div className={!this.props.state.mainView.isNightTheme
                 ? styles.Wrapper : styles.WrapperNight}
             onMouseLeave={this.props.onMouseLeave}>
                 <EmojiPicker onEmojiClick={this.props.onEmojiClick}/>

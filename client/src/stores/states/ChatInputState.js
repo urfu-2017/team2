@@ -29,6 +29,7 @@ export default class ChatInputState {
         this.isRecord = !this.isRecord;
     };
 
+
     @action submit = () => {
         if (!this.chatInput && this.previewState.attachments.length <= 0) {
             return;

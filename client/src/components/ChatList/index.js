@@ -42,10 +42,10 @@ export default class ChatList extends Component {
         );
 
         return (
-            <div className={this.props.state.mainView.isNightTheme
+            <div className={!this.props.state.mainView.isNightTheme
                 ? styles.Wrapper : styles.WrapperNight}>
                 <div className={styles.Wrappers}>
-                    <div className={this.props.state.mainView.isNightTheme
+                    <div className={!this.props.state.mainView.isNightTheme
                         ? styles.TopRow : styles.TopRowNight}>
                         <div className={styles.Profile}
                             onClick={state.toggleProfile.bind(state)}>

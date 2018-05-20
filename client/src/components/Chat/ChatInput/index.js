@@ -34,30 +34,34 @@ export default class ChatInput extends React.Component {
 
     speechStart() {
         const recognition = new webkitSpeechRecognition();
-        this.props.state.chatInputState.toggleRecord();
+        this.props.state.chatInputState.isRecord = true;
         this.props.state.chatInputState.recognition = recognition;
         recognition.continuous = true;
         recognition.interimResults = false;
         recognition.lang = 'ru-RU';
+        if (this.props.state.chatInputState.chatInput) {
+            this.props.state.chatInputState.chatInput += ' ';
+        }
         let currentText = this.props.state.chatInputState.chatInput;
         recognition.onresult = event => {
             currentText = Array.prototype
                 .reduce
                 .call(event.results, (str, result) => {
-                    return ' ' + result[0].transcript;
+                    return result[0].transcript;
                 }, ' ');
             this.props.state.chatInputState.chatInput += currentText;
         };
         recognition.onaudioend = () => {
-            this.props.state.chatInputState.toggleRecord();
+            this.props.state.chatInputState.isRecord = false;
         };
         recognition.start();
     }
 
     speechStop() {
+        this.props.state.chatInputState.isRecord = false;
         this.props.state.chatInputState.recognition.stop();
-        this.props.state.chatInputState.toggleRecord();
     }
+
 
     emojiButtonClick() {
         this.props.state.chatInputState.toggleEmojiList();
@@ -77,7 +81,7 @@ export default class ChatInput extends React.Component {
                             .bind(chatInputState)}/>
                     : null}
                 <article className={styles.SendBar}>
-                    <form id="send-message-form" className={this.props.state.mainView.isNightTheme
+                    <form id="send-message-form" className={!this.props.state.mainView.isNightTheme
                         ? styles.Wrapper : styles.WrapperNight}
                     onSubmit={this.submitHandler.bind(this)}>
                         <Preview chatPreviewState={this.props.state.chatPreviewState}/>
@@ -88,7 +92,7 @@ export default class ChatInput extends React.Component {
                                     accept="image/*" multiple className={styles.UploadInput}/>
                                 <i className="material-icons">image</i>
                             </label>
-                            <input type="text" className={this.props.state.mainView.isNightTheme
+                            <input type="text" className={!this.props.state.mainView.isNightTheme
                                 ? styles.Input : styles.InputNight}
                             value={chatInputState.chatInput}
                             placeholder=" Write a message..."
@@ -97,16 +101,19 @@ export default class ChatInput extends React.Component {
                                 this.chatInput = input;
                             }}
                             autoFocus/>
+
                             {
                                 this.props.state.chatInputState.isRecord
                                     ? <button form="send-record-form" type="button"
-                                        className={`${styles.MicroButtonOn} ${styles.Button}`}
-                                        onClick={this.speechStop.bind(this)}>
+                                        className={styles.MicroButtonOn}
+                                        onClick={this.speechStop.bind(this)}
+                                    >
                                         <i className="material-icons">micro</i>
                                     </button>
                                     : <button form="send-record-form" type="button"
-                                        className={`${styles.MicroButtonOff} ${styles.Button}`}
-                                        onClick={this.speechStart.bind(this)}>
+                                        className={styles.MicroButtonOff}
+                                        onClick={this.speechStart.bind(this)}
+                                    >
                                         <i className="material-icons">micro</i>
                                     </button>
                             }

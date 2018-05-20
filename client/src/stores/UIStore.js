@@ -11,6 +11,16 @@ import MessageNotificationState from './states/MessageNotificationState';
 export default class UIStore {
 
     constructor(dataStore) {
+        this.FILE_SIZE_LIMIT = 2;
+        this.FILE_FORMAT = ['image/jpg',
+            'image/jpeg',
+            'image/png',
+            'image/gif',
+            'jpg',
+            'jpeg',
+            'gif',
+            'png'
+        ];
         this.dataStore = dataStore;
         this.chatListState = new ChatListState(this.dataStore, this);
         this.chatsState = new ChatsState(this.dataStore, this, this.chatListState);
@@ -34,8 +44,10 @@ export default class UIStore {
     }
 
     @observable onLoadQueue = [];
+    @observable error = '';
 
     @observable loadAvatar = false;
+
 
     @observable mainView = {
         showContacts: true,
@@ -46,7 +58,7 @@ export default class UIStore {
 
     @action toggleNightMode = () => {
         this.mainView.isNightTheme = !this.mainView.isNightTheme;
-        localStorage.setItem('isNightTheme', this.mainView.isNightTheme = false);
+        localStorage.setItem('isNightTheme', this.mainView.isNightTheme);
     }
 
     @computed
@@ -75,12 +87,33 @@ export default class UIStore {
     }
 
     @action uploadAvatar = (file) => {
+
+        let fileFormat = false;
+        if (this.FILE_FORMAT.indexOf(file.type) === -1) {
+            fileFormat = true;
+        }
+
+        if (fileFormat) {
+            this.error = 'This file fomat isn`t supported';
+
+            return;
+        }
+
+        if (file.size >= this.FILE_SIZE_LIMIT * 1024 * 1024) {
+            this.error = `Only ${this.FILE_SIZE_LIMIT}MB files can be loaded`;
+
+            return;
+        }
         this.loadAvatar = true;
         this.dataStore.uploadAvatar(file);
     };
 
     @action toggleProfile = () => {
         this.mainView.showProfile = !this.mainView.showProfile;
+    };
+
+    @action clearError = () => {
+        this.error = '';
     };
 
     @action showProfile = () => {

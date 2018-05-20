@@ -60,24 +60,23 @@ export default class UserMessage extends Component {
         const msgActionsStyle = {
             display: showButtons ? 'block' : ''
         };
-        if (this.props.id) {
-            return (
-                <div className={styles.MessageActions} style={msgActionsStyle}>
-                    <div
-                        className={styles.MessageAction}
-                        onClick={this.showReactionSelector.bind(this)}
-                    >
-                        <i className="material-icons">add</i>
-                    </div>
-                    <div
-                        className={styles.MessageAction}
-                        onClick={this.showAlarm.bind(this)}
-                    >
-                        <i className="material-icons">schedule</i>
-                    </div>
+
+        return (
+            <div className={styles.MessageActions} style={msgActionsStyle}>
+                <div
+                    className={styles.MessageAction}
+                    onClick={this.showReactionSelector.bind(this)}
+                >
+                    <i className="material-icons">add</i>
                 </div>
-            );
-        }
+                <div
+                    className={styles.MessageAction}
+                    onClick={this.showAlarm.bind(this)}
+                >
+                    <i className="material-icons">schedule</i>
+                </div>
+            </div>
+        );
     }
 
     getReactions() {
@@ -105,7 +104,7 @@ export default class UserMessage extends Component {
             `${styles.Message} ${this.props.fromMe ? styles.FromMeNight : styles.FromSomeoneNight}`;
 
         return (
-            <div className={this.props.state.mainView.isNightTheme
+            <div className={!this.props.state.mainView.isNightTheme
                 ? className : classNameNight} ref={el => {
                 this.ref = el;
             }}>
@@ -157,7 +156,7 @@ export default class UserMessage extends Component {
                                         className={styles.ImgBig}/>
                                     { <span className={styles.PopupClose}
                                         onClick={close}>
-                                    ❌
+                                        <i className="material-icons">close</i>
                                     </span>}
                                 </span>
                             </div>
@@ -165,7 +164,8 @@ export default class UserMessage extends Component {
                     }
                 </Popup>}
                 </div>
-                <div className={styles.Reactions}>
+                <div
+                    className={styles.Reactions}>
                     {this.getReactions()}
                 </div>
             </div>

@@ -95,7 +95,7 @@ export default class ChatHistory extends Component {
                 onDragOver={this.onDragStart.bind(this)}
                 onDrop={this.onDrop.bind(this)}
                 onDragLeave={this.onDragLeave.bind(this)}
-                className={ this.props.state.mainView.isNightTheme
+                className={!this.props.state.mainView.isNightTheme
                     ? className : classNameNight}
                 ref={el => {
                     this.topRef = el;

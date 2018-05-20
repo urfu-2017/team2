@@ -37,11 +37,11 @@ export default class Preview extends React.Component {
                         {
                             (close) => (
                                 <div className={styles.PopupContainer}>
-                                    <span className={styles.PopupUserInfo}>
+                                    <span className={styles.ErrorMessage}>
                                         {chatPreviewState.error}
                                     </span>
                                     { <span className={styles.PopupClose} onClick={close}>
-                                        ❌
+                                        <i className="material-icons">close</i>
                                     </span>}
                                 </div>
                             )
@@ -50,7 +50,7 @@ export default class Preview extends React.Component {
                 {attachments.map((url, index) =>
                     <div key={index} className={styles.PreviewImg}>
                         {url === 'loading'
-                            ? <div className={styles.Loader}/>
+                            ? <div className={`${styles.Loader} ${styles.Img}`}/>
                             : <img className={styles.Img} src={url}/>}
                         <button type="button" key={index} className={`${styles.CloseButton}
                             ${styles.Button}`}
