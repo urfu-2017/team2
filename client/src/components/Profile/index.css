@@ -14,43 +14,55 @@
 
     width: 270px;
 
-    z-index: 1;
+    z-index: 4;
     background: #fffffa;
     box-shadow: 0 0 12px #00000034;
+    color: #000;
 }
 
 .WrapperNight
 {
-    background:rgb(112, 112, 112);
+    background: #7f7979;
     color: white;
 }
 
-.BackButton {
+.BackButton,
+.BackButtonNight {
     position: absolute;
+
+    top: 16px;
+    right: 16px;
 
     width: 24px;
     height: 24px;
 
     background: transparent;
     border: none;
+    color: #aaa;
 }
 
 .BackButton:hover {
-    outline: none;
+    color: #222;
 }
 
 .Photo {
     width: 100%;
 }
 
-.Name {
+.Name
+{
     font-size: 20px;
     font-weight: 600;
+    width: 130px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    margin-bottom: 30px;
 }
 
 .Info {
     display: flex;
-    flex-wrap: wrap;
+    flex-flow: column nowrap;
     justify-content: space-between;
     padding: 16px;
     font-size: 14px;
@@ -61,8 +73,42 @@
     color: #aaa;
 }
 
+label
+{
+    cursor: pointer;
+}
+
 .ChangeAvatarButton {
     display: none;
+}
+
+.Link {
+    display: flex;
+    align-items: center;
+}
+
+.LinkInput {
+    margin: 0 8px;
+    width: 100%;
+}
+.CopyLinkButton {
+    margin: auto;
+    padding: 2px 0 0;
+    cursor: pointer;
+    color: #aaa;
+    text-decoration: none;
+    user-select: none;
+    background: transparent;
+    outline: none;
+    border: 0;
+}
+
+.CopyLinkButton i {
+    font-size: 16px;
+}
+
+.CopyLinkButton:hover i {
+    color: #222;
 }
 
 .LoginHeader {
@@ -71,9 +117,10 @@
 
 /* Mobile */
 @media screen and (max-width: 425px) {
-    .Wrapper {
-        width: 100%;
-        height: 100%;
+    .Wrapper,
+    .WrapperNight {
+        width: 100vw;
+        height: 100vh;
     }
 }
 
@@ -102,4 +149,26 @@
     to {
         transform: rotate(360deg);
     }
+}
+
+.PopupContainer {
+    height: 130px;
+    display: flex;
+}
+
+.ErrorMessage {
+    font-size: 22px;
+    width: 100%;
+    text-align: center;
+    margin: auto;
+    z-index: 1000;
+}
+
+.PopupClose {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #aaa;
+    font-size: 22px;
+    cursor: pointer;
 }

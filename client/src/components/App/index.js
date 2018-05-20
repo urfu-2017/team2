@@ -5,6 +5,7 @@ import { observer, inject, Provider } from 'mobx-react';
 import ChatList from '../ChatList';
 import Profile from '../Profile';
 import Chat from '../Chat';
+import MessageNotification from '../MessageNotification';
 import ServiceMessage from '../Chat/ChatHistory/ServiceMessage';
 import styles from './index.css';
 import ChatItem from '../ChatList/ChatItem/index';
@@ -35,7 +36,8 @@ export default class App extends Component {
             chatCreateState,
             chatListState,
             reactionSelectorState,
-            alarmState
+            alarmState,
+            messageNotificationState
         } = state;
 
         const chatList = chatListState.chatsToDisplay.map(chat => (
@@ -57,8 +59,10 @@ export default class App extends Component {
                 reactionSelectorState={reactionSelectorState}
                 alarmState={alarmState}
                 state={state}
-                dataStore={dataStore}>
+                dataStore={dataStore}
+                messageNotificationState={messageNotificationState}>
                 <div className={styles.Wrapper}>
+                    <MessageNotification/>
                     <div className={styles.LoadingScreen}
                         style={{ display: loaderState ? 'flex' : 'none' }}>
                         <div className={styles.LoaderWrapper}>
@@ -76,15 +80,16 @@ export default class App extends Component {
                             inviteLink={chatListState.currentChat.inviteLink}
                             dialog={chatListState.currentChat.dialog}>
                         </Chat>
-                        : <div className={state.mainView.isNightTheme
+                        : <div className={!state.mainView.isNightTheme
                             ? styles.StubWrapper : styles.StubWrapperNight}
                         onClick={state.closeProfile.bind(state)}>
                             <ServiceMessage text="Please select a chat to start messaging"/>
                         </div>}
                     {state.mainView.showProfile &&
                     <Profile
-                        closeProfile={state.closeProfile.bind(state)}
-                        profile={dataStore.profile}/>}
+                        close={state.closeProfile.bind(state)}
+                        profile={dataStore.profile}
+                        canChangeAvatar />}
                     <Sound
                         url={`${process.env.STATIC}/${AlarmSound}`}
                         playStatus={
@@ -102,7 +107,7 @@ export default class App extends Component {
                         contentStyle={this.defaultStyleOverride}
                     >
                         {close => (
-                            <div className={state.mainView.isNightTheme
+                            <div className={!state.mainView.isNightTheme
                                 ? styles.PopupContainer : styles.PopupContainerNight}>
                                 <span className={styles.PopupUserInfo}>
                             Alarm!
@@ -111,7 +116,7 @@ export default class App extends Component {
                                     close();
                                     alarmState.close();
                                 }}>
-                            ❌
+                                    <i className="material-icons">close</i>
                                 </span>
                                 <span
                                     className={styles.PopupContent}

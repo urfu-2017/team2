@@ -28,7 +28,8 @@ export default class Contact extends Component {
                     @{this.props.login}
                 </span>
                 {this.props.withCheckbox &&
-                <Checkbox checked={this.props.isChecked}/>
+                <Checkbox className={styles.Checkbox}
+                    checked={this.props.isChecked}/>
                 }
             </a>
         );

@@ -3,7 +3,7 @@ import ReactPropTypes from 'prop-types';
 import styles from './index.css';
 import EmojiPicker from 'emoji-picker-react';
 import { observer, inject } from 'mobx-react';
-import PropTypes from 'prop-types';
+import { PropTypes } from 'mobx-react';
 
 @inject('state') @observer
 export default class ChatEmojiPicker extends Component {
@@ -20,7 +20,7 @@ export default class ChatEmojiPicker extends Component {
 
     render() {
         return (
-            <div className={this.props.state.mainView.isNightTheme
+            <div className={!this.props.state.mainView.isNightTheme
                 ? styles.Wrapper : styles.WrapperNight}
             onMouseLeave={this.props.onMouseLeave}>
                 <EmojiPicker onEmojiClick={this.props.onEmojiClick}/>

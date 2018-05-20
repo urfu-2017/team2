@@ -1,4 +1,6 @@
-.Wrapper {
+.Wrapper,
+.WrapperNight
+{
     display: flex;
     flex-flow: row nowrap;
     align-items: stretch;
@@ -8,7 +10,9 @@
     text-decoration: none;
 }
 
-.Wrapper::before {
+.Wrapper::before,
+.WrapperNight::before
+{
     margin: 0 4px 0 0;
     width: 2px;
     content: '';
@@ -16,7 +20,9 @@
     border-radius: 4px;
 }
 
-.Title {
+.Title,
+.TitleNight
+{
     display: block;
     color: #03a9f4;
     font-weight: 600;
@@ -29,4 +35,15 @@
 .OgImage {
     max-width: 100%;
     max-height: 100%;
+}
+
+.WrapperNight::before,
+.TitleNight
+{
+    background-color: #a7e3ff;
+}
+
+.WrapperNight
+{
+    color: #797979;
 }

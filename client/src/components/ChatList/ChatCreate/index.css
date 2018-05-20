@@ -1,32 +1,56 @@
-.ContactList{
-    padding-bottom: 30px;
+.ContactList {
     width: 100%;
 }
 
-.Button {
+.Buttons {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-end;
+    align-items: center;
 
-    position: fixed;
-    bottom: 0;
-    padding: 0;
-    width: 270px;
-    height: 50px;
+    margin: 16px 0;
 
-    background-color: rgb(216, 216, 216);
+    width: 100%;
+}
+
+.CancelButton,
+.CreateButton {
+    margin: 0 16px 0 0;
+    padding: 12px 16px;
+
     text-decoration: none;
-    text-align: center;
     user-select: none;
-    font-size: 20px;
-    color: #000a;
     cursor: pointer;
+    background: transparent;
     outline: none;
     border: 0;
+
+    font-size: 15px;
+    text-align: center;
 }
 
-.Button:active {
-    background-color: #03a9f4;
-    color: #fff;
+.CancelButton:hover {
+    color: #777;
 }
 
-.Button:disabled{
+.CreateButton {
+    background: #555;
+    color: #fffffe;
+
+    border-radius: 32px;
+}
+
+.CancelButton:active {
+    color: #03a9f4;
+}
+
+.CreateButton:active {
+    background: #03a9f4;
+}
+
+.CreateButton:disabled {
     cursor: not-allowed;
+
+    background: #f5f5f5;
+    color: #bbb;
 }

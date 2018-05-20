@@ -23,14 +23,14 @@ export default class ChatItem extends Component {
     };
 
     static currentStyle = {
-        backgroundColor: '#03a9f4',
+        backgroundColor: 'gray',
         color: '#fffffa'
     };
 
     render() {
         return (
             <a style={this.props.current ? ChatItem.currentStyle : {}}
-                className={this.props.state.mainView.isNightTheme
+                className={!this.props.state.mainView.isNightTheme
                     ? styles.Wrapper : styles.WrapperNight} onClick={this.props.onClick}>
                 <Avatar src={this.props.photoURL} size={52} />
                 <span className={styles.Name}>

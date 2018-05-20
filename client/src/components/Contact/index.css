@@ -14,6 +14,8 @@
     font-size: 14px;
 
     box-sizing: border-box;
+
+    cursor: pointer;
 }
 
 .Name {
@@ -40,20 +42,60 @@
 }
 
 .Checkbox {
-    grid-area: c;
+    position: relative;
 
-    background: #fffffa;
+    grid-area: c;
+    /* border-radius: 16px; */
+
+    cursor: pointer;
+}
+
+.Checkbox input {
+    position: absolute;
+    opacity: 0;
+}
+
+.Checkbox span {
+    position: absolute;
+    top: -12px;
+    left: -24px;
+    height: 24px;
+    width: 24px;
+    background-color: #fffffa;
 
     border: 1px solid #aaa;
     border-radius: 50%;
 }
 
-.Wrapper:hover {
-    background: #03a9f4;
-    cursor: pointer;
+.Checkbox:hover input ~ span {
+    background: #eee;
 }
 
-.Wrapper:hover,
-.Wrapper:hover > .Info {
+.Checkbox input:checked ~ span {
+    background: #aaa;
+}
+
+.Checkbox span::after {
+    content: '';
+    position: absolute;
+    display: none;
+
+    top: 8px;
+    left: 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #fffffa;
+}
+
+.Checkbox input:checked ~ span::after {
+    display: block;
+}
+
+.Wrapper:hover {
+    background: #1e1e24;
+}
+
+.Wrapper:hover .Name {
     color: #fffffa;
 }

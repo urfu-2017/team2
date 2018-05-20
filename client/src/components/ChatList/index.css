@@ -5,7 +5,7 @@
     justify-content: flex-start;
     align-items: stretch;
 
-    width: 270px;
+    width: 300px;
 
     z-index: 1;
     box-shadow: 0 0 12px #00000034;
@@ -15,7 +15,7 @@
 }
 
 .WrapperNight {
-    background: linear-gradient(#1e1e24, #1e1e24c4);
+    background:  #424244;
     color: white;
 }
 
@@ -32,28 +32,25 @@
     display: flex;
     width: 100%;
     justify-content: space-around;
-    margin-bottom: 10px;
     background-color: #fffffa;
     box-shadow: 2px -2px 4px 2px inherit;
-    padding: 24px 0 14px;
+    padding: 18px 0 19px;
 }
 
 .TopRowNight
 {
-    box-shadow: 2px -2px 4px 2px rgb(112, 112, 112);
-    background-color: rgb(112, 112, 112);
+    background-color: #424244;
     color: rgb(185, 185, 185);
 }
 
-
 .Profile {
-    margin-left: 10px;
+    margin: 0 12px;
     align-self: center;
     cursor: pointer;
 }
 
 .SearchForm {
-    width: 170px;
+    width: 100%;
     align-self: center;
 }
 
@@ -122,13 +119,17 @@
 .Button {
     display: flex;
     padding: 0;
-    color: #757575;
+    color: #aaa;
     text-decoration: none;
     user-select: none;
     background: transparent;
     outline: none;
     border: 0;
     align-self: center;
+}
+
+.CreateChatBtn {
+    margin: 0 6px 0 6px;
 }
 
 .CreateChatBtn:active {
@@ -138,26 +139,26 @@
 }
 
 .NightThemeBtn,
-.LightThemeBtn
-{
-    color: rgb(185, 185, 185);
-    top: 24px;
-    position: absolute;
-    right: 10px;
+.LightThemeBtn {
+    padding-bottom: 2px;
+    margin-right: 10px;
+    color: #aaa;
     cursor: pointer;
+    padding: 7px;
 }
+
 
 .NightThemeBtn
 {
-    color: rgb(238, 238, 44);
+    color: #eeee2c;
     animation: neonGlow 1.5s infinite;
 }
 
 @keyframes neonGlow {
-    0% { text-shadow: 0 0 20px yellow; }
-    30% { text-shadow: 0 0 50px yellow; }
-    80% { text-shadow: 0 0 50px yellow; }
-    100% { text-shadow: 0 0 20px yellow; }
+    0% { text-shadow: 0 0 20px #eeee2c; }
+    30% { text-shadow: 0 0 50px #eeee2c; }
+    80% { text-shadow: 0 0 50px #eeee2c; }
+    100% { text-shadow: 0 0 20px #eeee2c; }
 }
 
 .CreateChatActive{
@@ -184,9 +185,8 @@
 
 /* Mobile */
 @media screen and (max-width: 767px) {
-    .Wrapper {
-        display: none;
-
+    .Wrapper,
+    .WrapperNight {
         width: 100%;
     }
 }

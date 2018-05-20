@@ -22,12 +22,13 @@ export default class ChatPreviewState {
     @observable attachments = [];
 
     @observable uploadQueue = [];
+    @observable fileCounter = 0;
 
     @observable isDropping = false;
 
     @action change = (files) => {
         if (files.length > this.FILE_AMOUNT_LIMIT ||
-            this.attachments.length > this.FILE_AMOUNT_LIMIT) {
+            this.fileCounter > this.FILE_AMOUNT_LIMIT - 1) {
             this.error = `Only ${this.FILE_AMOUNT_LIMIT} files can be loaded at the time`;
 
             return;
@@ -41,6 +42,7 @@ export default class ChatPreviewState {
 
 
         Object.values(files).forEach(file => {
+            this.fileCounter++;
             if (this.FILE_FORMAT.indexOf(file.type) === -1) {
                 fileFormat = true;
             }
@@ -83,5 +85,6 @@ export default class ChatPreviewState {
 
     @action remove = (index) => {
         this.attachments.splice(index, 1);
+        this.fileCounter--;
     };
 }

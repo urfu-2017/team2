@@ -1,9 +1,9 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Avatar from '../../Contact/Avatar';
+import Profile from '../../Profile';
 import styles from './index.css';
 import Popup from 'reactjs-popup';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { observer, inject } from 'mobx-react';
 
 @inject('state') @observer
@@ -13,16 +13,18 @@ export default class ChatHeader extends Component {
     }
 
     defaultStyleOverride = {
-        width: '420px',
+        width: 'auto',
+        border: '0',
+        background: 'transparent',
         padding: '0',
         'borderRadius': '4px'
     };
 
     defaultStyleOverrideNight = {
-        width: '420px',
+        width: 'auto',
         padding: '0',
         'borderRadius': '4px',
-        background: 'gray',
+        background: 'transparent',
         color: 'white'
     };
 
@@ -30,7 +32,6 @@ export default class ChatHeader extends Component {
         state: PropTypes.object,
         avatar: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
-        status: PropTypes.string,
         inviteLink: PropTypes.string,
         dialog: PropTypes.bool
     };
@@ -58,79 +59,43 @@ export default class ChatHeader extends Component {
 
     render() {
         return (
-            <Popup
-                trigger={<div className={this.props.state.mainView.isNightTheme
-                    ? styles.Wrapper : styles.WrapperNight}>
-                    <Avatar src={this.props.avatar} size={48}/>
-                    <a className={styles.Info}>
-                        <span className={styles.Name}>
-                            {this.props.name}
-                        </span>
-                        <span className={styles.Status}>
-                            {this.props.status}
-                        </span>
-                    </a>
-                </div>
-                }
-                modal
-                closeOnEscape
-                contentStyle={this.props.state.mainView.isNightTheme
-                    ? this.defaultStyleOverride : this.defaultStyleOverrideNight}
-                closeOnDocumentClick
-            >
-                {close => (
-                    <div className={styles.PopupContainer}>
-                        <span className={styles.PopupUserInfo}>
-                            User Info
-                        </span>
-                        <span className={styles.PopupClose} onClick={close}>
-                            ❌
-                        </span>
-                        <Avatar className={styles.PopupAvatar} src={this.props.avatar} size={70}/>
-                        <span className={`${styles.PopupName} ${''/* this.props.state
-                            ? styles.Hidden : '' */}`}
-                        onClick={this.titleClickHandler.bind(this)}>
-                            {this.props.name}
-                        </span>
-                        <div className={`${''/* this.props.state
-                            ? '' : styles.Hidden */} ${styles.NameEditor}`}>
-                            <input type="text" className={styles.NameInput}
-                                defaultValue={this.props.name}/>
-                            <button className={`${styles.Button}`}
-                                onClick={this.titleRenameHandler.bind(this)}
-                            >
-                                <i className="material-icons">done</i>
-                            </button>
-                            <button className={`${styles.Button}`}
-                                onClick={this.cancelEditing.bind(this)}
-                            >
-                                <i className="material-icons">clear</i>
-                            </button>
-                        </div>
-                        <span className={styles.PopupStatus}>
-                            {this.props.status}
-                        </span>
-                        {!this.props.dialog &&
-                        <Fragment>
-                            <span className={styles.PopupLinkHeader}>Link:</span>
-                            <div className={styles.PopupLinkValue}>
-                                <input className={styles.PopupLinkInput} disabled
-                                    value={this.props.inviteLink}/>
-                                <CopyToClipboard text={this.props.inviteLink}>
-                                    <button className={styles.Button}>
-                                        <i className="material-icons">content_copy</i>
-                                    </button>
-                                </CopyToClipboard>
-                            </div>
-                            {/* <button className={`${styles.Button} ${styles.LeaveButton}`}*/}
-                            {/* onClick={this.leaveHandler.bind(this)}>*/}
-                            {/* Leave chat*/}
-                            {/* </button>*/}
-                        </Fragment>
-                        }
-                    </div>
-                )}
-            </Popup>
+            <div className={!this.props.state.mainView.isNightTheme
+                ? styles.Wrapper : styles.WrapperNight}>
+                <button form="send-message-form" type="button"
+                    className={this.props.state.mainView.isNightTheme
+                        ? styles.BackButton : styles.BackButtonNight}
+                    onClick={() => this.props.state.chatListState.closeChat()}>
+                    <i className="material-icons">arrow_back_ios</i>
+                </button>
+                <Avatar src={this.props.avatar} size={48}/>
+                <Popup
+                    className={styles.Popup}
+                    trigger={
+                        <a className={styles.Info}>
+                            <span className={styles.Name}>
+                                {this.props.name}
+                            </span>
+                        </a>
+                    }
+                    modal
+                    closeOnEscape
+                    contentStyle={this.props.state.mainView.isNightTheme
+                        ? this.defaultStyleOverride : this.defaultStyleOverrideNight}
+                    closeOnDocumentClick
+                >
+                    {close => (
+                        <Profile
+                            profile={{
+                                avatar: this.props.avatar,
+                                login: this.props.name,
+                                link: this.props.dialog
+                                    ? undefined
+                                    : this.props.inviteLink
+                            }}
+                            close={close}/>
+                    )}
+                </Popup>
+            </div>
         );
     }
 }

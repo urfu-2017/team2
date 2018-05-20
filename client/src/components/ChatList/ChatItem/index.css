@@ -14,6 +14,8 @@
     font-size: 14px;
 
     box-sizing: border-box;
+
+    cursor: pointer;
 }
 
 .Name {
@@ -27,14 +29,26 @@
     white-space: nowrap;
 }
 
-.LastMessage {
+div a:focus
+{
+    background: gray;
+}
+
+
+.LastMessage p {
     grid-area: m;
 
-    margin: 0 0 0 16px;
+    margin: 0 8px 0 12px;
 
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    width: 100px;
+}
+
+.LastMessage a:visited
+{
+    color: white;
 }
 
 .LastMessageDate {
@@ -60,10 +74,8 @@
     cursor: pointer;
 }
 
-.WrapperNight:hover
-{
-    background: rgb(112, 112, 112);
-    cursor: pointer;
+.WrapperNight:hover {
+    background: #e2e5e7;
 }
 
 .Wrapper:hover > .UnreadCount {
@@ -71,5 +83,7 @@
 }
 
 .LastMessage p {
-    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

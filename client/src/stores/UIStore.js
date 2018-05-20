@@ -6,20 +6,33 @@ import ReactionSelectorState from './states/ReactionSelectorState';
 import ChatCreateState from './states/ChatCreateState';
 import AlarmState from './states/AlarmState';
 import ChatsState from './states/ChatsState';
+import MessageNotificationState from './states/MessageNotificationState';
 
 export default class UIStore {
 
     constructor(dataStore) {
+        this.FILE_SIZE_LIMIT = 2;
+        this.FILE_FORMAT = ['image/jpg',
+            'image/jpeg',
+            'image/png',
+            'image/gif',
+            'jpg',
+            'jpeg',
+            'gif',
+            'png'
+        ];
         this.dataStore = dataStore;
         this.chatListState = new ChatListState(this.dataStore, this);
         this.chatsState = new ChatsState(this.dataStore, this, this.chatListState);
         this.chatCreateState = new ChatCreateState(this.dataStore);
         this.reactionSelectorState = new ReactionSelectorState(this.dataStore);
         this.alarmState = new AlarmState(this.dataStore);
+        this.messageNotificationState =
+            new MessageNotificationState(this.dataStore, this.chatListState);
 
         autorun(() => {
-            if (dataStore.loadingState === States.LOADED) {
-                this.onLoadQueue.forEach(fc => fc());
+            if (dataStore.loadingState === States.LOADED && this.onLoadQueue.length) {
+                this.onLoadQueue.pop()();
             }
         });
 
@@ -31,8 +44,10 @@ export default class UIStore {
     }
 
     @observable onLoadQueue = [];
+    @observable error = '';
 
     @observable loadAvatar = false;
+
 
     @observable mainView = {
         showContacts: true,
@@ -72,12 +87,33 @@ export default class UIStore {
     }
 
     @action uploadAvatar = (file) => {
+
+        let fileFormat = false;
+        if (this.FILE_FORMAT.indexOf(file.type) === -1) {
+            fileFormat = true;
+        }
+
+        if (fileFormat) {
+            this.error = 'This file fomat isn`t supported';
+
+            return;
+        }
+
+        if (file.size >= this.FILE_SIZE_LIMIT * 1024 * 1024) {
+            this.error = `Only ${this.FILE_SIZE_LIMIT}MB files can be loaded`;
+
+            return;
+        }
         this.loadAvatar = true;
         this.dataStore.uploadAvatar(file);
     };
 
     @action toggleProfile = () => {
         this.mainView.showProfile = !this.mainView.showProfile;
+    };
+
+    @action clearError = () => {
+        this.error = '';
     };
 
     @action showProfile = () => {

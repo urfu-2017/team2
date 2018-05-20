@@ -8,13 +8,39 @@
     background: #fffffa;
     box-shadow: 0 0 12px #00000034;
     box-sizing: border-box;
-    cursor: pointer;
+
     border: thin dashed transparent;
 
 }
 
 .WrapperNight {
-    background: rgb(112, 112, 112);
+    background: #7f7979;
+}
+
+.BackButton,
+.BackButtonNight {
+    margin: 0;
+    padding: 0;
+
+    text-decoration: none;
+    user-select: none;
+    cursor: pointer;
+    background: transparent;
+    outline: none;
+    border: 0;
+}
+
+.BackButton i,
+.BackButtonNight i {
+    padding: 2px 8px 0 0;
+    font-size: 22px;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.BackButton:hover i,
+.BackButtonNight:hover i  {
+    color: #222;
 }
 
 .Info {
@@ -28,84 +54,15 @@
 
 .Name {
     font-weight: 600;
+    cursor: pointer;
+}
+
+.Name:hover {
+    color: #aaa;
 }
 
 .Status {
     color: #aaa;
-}
-
-.PopupContainer {
-    padding: 20px;
-    width: 380px;
-    height: 180px;
-    display: grid;
-    grid-template-areas: "u u c" "a n n" "a s s" "lh lv lv" "leave leave leave";
-    grid-template-rows: 60px 35px 35px;
-    grid-template-columns: 90px 270px 20px;
-}
-
-.PopupUserInfo {
-    font-size: 18px;
-    grid-area: u;
-    align-self: baseline;
-}
-
-.PopupClose {
-    color: #aaa;
-    font-size: 18px;
-    grid-area: c;
-    align-self: baseline;
-    cursor: pointer;
-}
-
-.PopupAvatar {
-    grid-area: a;
-}
-
-.PopupName {
-    font-size: 16px;
-    font-weight: 600;
-    grid-area: n;
-    align-self: end;
-}
-
-.PopupName:hover{
-    cursor: pointer;
-    opacity: .7;
-}
-
-.PopupStatus {
-    color: #aaa;
-    grid-area: s;
-}
-
-.PopupLinkHeader {
-    grid-area: lh;
-    font-size: 16px;
-    margin-top: 7px;
-    text-align: left;
-}
-
-.PopupLinkValue {
-    grid-area: lv;
-    display: flex;
-}
-
-.PopupLinkInput {
-    overflow: hidden;
-    height: 24px;
-    margin: 0 0 16px;
-    padding: 6px 6px;
-
-    width: 90%;
-
-    font-size: 14px;
-
-    background: #ddd;
-
-    border: 1px solid #ddd;
-    border-radius: 2px;
-    box-sizing: border-box;
 }
 
 .Button {
@@ -114,25 +71,13 @@
     margin: auto 16px 16px 0;
     padding: 0;
 
-    color: #757575;
+    color: #aaa;
     text-decoration: none;
     user-select: none;
+    cursor: pointer;
     background: transparent;
     outline: none;
     border: 0;
-}
-
-.Button:active {
-    color: #03a9f4;
-}
-
-.LeaveButton {
-    color: #e00;
-    font-size: 14px;
-}
-
-.LeaveButton:active {
-    color: #a00205;
 }
 
 .Hidden {

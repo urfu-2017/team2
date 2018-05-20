@@ -10,17 +10,11 @@ import Popup from 'reactjs-popup';
 export default class Preview extends React.Component {
     constructor(props) {
         super(props);
-        this.changeHandler = this.changeHandler.bind(this);
     }
 
     static propTypes = {
         chatPreviewState: PropTypes.observableObject
     };
-
-    changeHandler(event) {
-        this.props.chatPreviewState.change(event.currentTarget.files);
-        event.currentTarget.value = '';
-    }
 
     renderPreview() {
         const { chatPreviewState } = this.props;
@@ -43,11 +37,11 @@ export default class Preview extends React.Component {
                         {
                             (close) => (
                                 <div className={styles.PopupContainer}>
-                                    <span className={styles.PopupUserInfo}>
+                                    <span className={styles.ErrorMessage}>
                                         {chatPreviewState.error}
                                     </span>
                                     { <span className={styles.PopupClose} onClick={close}>
-                                        ❌
+                                        <i className="material-icons">close</i>
                                     </span>}
                                 </div>
                             )
@@ -56,7 +50,7 @@ export default class Preview extends React.Component {
                 {attachments.map((url, index) =>
                     <div key={index} className={styles.PreviewImg}>
                         {url === 'loading'
-                            ? <div className={styles.Loader}/>
+                            ? <div className={`${styles.Loader} ${styles.Img}`}/>
                             : <img className={styles.Img} src={url}/>}
                         <button type="button" key={index} className={`${styles.CloseButton}
                             ${styles.Button}`}
@@ -74,13 +68,6 @@ export default class Preview extends React.Component {
         return (
             <React.Fragment>
                 {this.renderPreview()}
-                <div className = {`${styles.ImageButton} ${styles.Button}`}>
-                    <label>
-                        <input type="file" onChange={this.changeHandler}
-                            accept="image/*" multiple className={styles.Upload}/>
-                        <i className="material-icons">image</i>
-                    </label>
-                </div>
             </ React.Fragment>
         );
     }

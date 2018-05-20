@@ -2,8 +2,8 @@
     margin: 8px 0;
     padding: 8px 12px;
 
-    min-width: 150px;
-
+    max-width: 200px;
+    width: 200px;
     word-wrap:break-word;
 
     font-size: 14px;
@@ -17,6 +17,11 @@
 
 .Body p {
     margin: 0;
+}
+
+.Body code
+{
+    color: black !important;
 }
 
 .Body code {
@@ -96,6 +101,7 @@
 {
     height: 150px;
     margin: 0 2px 4px;
+    max-width: 200px;
 }
 
 .Message:hover .MessageActions
@@ -142,6 +148,7 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
+    width: 240px;
 }
 
 .Reaction
@@ -152,6 +159,7 @@
     padding: 3px 5px;
     margin-right: 5px;
     cursor: pointer;
+    margin-top: 4px;
 }
 
 .Reaction > span:last-child
